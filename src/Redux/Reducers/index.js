@@ -4,5 +4,5 @@ import { groupReducer } from "./groupReducer";
 import { activityReducer } from "./activityReducer";
 import { sourceReducer } from "./sourceReducer";
 import { memberReducer } from "./memberReducer";
-
-export { accountReducer, userReducer,groupReducer,activityReducer,sourceReducer,memberReducer}
+import { analysisReducer } from "./analysisReducer";
+export { accountReducer, userReducer,groupReducer,activityReducer,sourceReducer,memberReducer,analysisReducer}

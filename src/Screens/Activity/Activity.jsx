@@ -94,18 +94,18 @@ console.log(isLoading);
         {(activity && activity.length>0) ? (
             <>
                 <View  onLayout={onLayout} style={{ flex: 1 }}>
-                <FlatList
-                    data={activity}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={renderItem}
-                    onEndReached={()=>{
-                        // if(viewportHeight<listHeight){
-                           loadMoreData()
-                        // }
-                    }}
-                    onEndReachedThreshold={0.5}
-                    ListFooterComponent={renderFooter}
-                />
+                    <FlatList
+                        data={activity}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderItem}
+                        onEndReached={()=>{
+                            // if(viewportHeight<listHeight){
+                            loadMoreData()
+                            // }
+                        }}
+                        onEndReachedThreshold={0.5}
+                        ListFooterComponent={renderFooter}
+                    />
                 {(isLoading && page === 1) && <View style={defaultStyle.activityIndicator}>
                     <ActivityIndicator size="large" color={colors.text} />
                 </View>}
