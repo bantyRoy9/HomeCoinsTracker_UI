@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import {ScrollView, StyleSheet, Text, View, Pressable, Image } from 'react-native'
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../Redux/Action/userAction';
-import { defaultStyle, FontAwesome, profileNavList } from '../../Utils';
+import { defaultStyle, FontAwesome, profileNavList, userControllerURL } from '../../Utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from 'react-native-paper';
+import axios from 'axios';
 
 const Profile = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -19,8 +20,16 @@ const Profile = ({ navigation }) => {
         };
         fetchUser()
     }, []);
+    const removeFmcToken = async() =>{
+        try{
+            const {} = await axios.patch(userControllerURL+'removefmcToken',)
+        }catch(err){
 
+        }
+    }
     const logout = async () => {
+        let fmctoken = await AsyncStorage.getItem('')
+        await removeFmcToken()
         dispatch(logoutUser(navigation))
     };
     const onPressprofileNav = (forPress) => {

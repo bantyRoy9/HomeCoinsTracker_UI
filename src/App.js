@@ -37,8 +37,8 @@ const App = () => {
 
   const checkToken = async () => {
     const fcmToken = await messaging().getToken();
-    console.log('fcmtoken not matched->', fcmToken && userDetails && userDetails.fcmtoken !== fcmToken)
-    if (fcmToken && userDetails && userDetails.fcmtoken != fcmToken) {
+    console.log('fcmtoken not matched->', fcmToken && userDetails && userDetails.fcmtoken.includes(fcmToken))
+    if (fcmToken && userDetails && userDetails.fcmtoken.includes(fcmToken)) {
       await updatefcmtoken(fcmToken);
     }
   };
