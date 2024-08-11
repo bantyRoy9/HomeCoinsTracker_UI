@@ -12,52 +12,20 @@ import {Rect, Svg, Text as TextSVG} from 'react-native-svg';
 import {useTheme} from 'react-native-paper';
 import {ScreenWidth} from 'react-native-elements/dist/helpers';
 
-const Chart = ({graphData, chartType = 'lineChart'}) => {
-  const [tooltip, setTooltip] = useState({x: 0,y: 0,visible: false,value: 0,color: '',});
+const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
+  const [tooltip, setTooltip] = useState({
+    x: 0,
+    y: 0,
+    visible: false,
+    value: 0,
+    color: '',
+  });
   const {colors} = useTheme();
   const backgroundStyle = {
     backgroundColor: colors.card,
     color: colors.text,
   };
-  const data = [
-    {
-      name: 'Seoul',
-      population: 21500000,
-      color: 'rgba(131, 167, 234, 1)',
-      legendFontColor: '#7F7F7F',
-      legendFontSize: 15,
-    },
-    {
-      name: 'Toronto',
-      population: 2800000,
-      color: '#F00',
-      legendFontColor: '#7F7F7F',
-      legendFontSize: 15,
-    },
-    {
-      name: 'Beijing',
-      population: 527612,
-      color: 'red',
-      legendFontColor: '#7F7F7F',
-      legendFontSize: 15,
-    },
-    {
-      name: 'New York',
-      population: 8538000,
-      color: '#ffffff',
-      legendFontColor: '#7F7F7F',
-      legendFontSize: 15,
-    },
-    {
-      name: 'Moscow',
-      population: 11920000,
-      color: 'rgb(0, 0, 255)',
-      legendFontColor: '#7F7F7F',
-      legendFontSize: 15,
-    },
-  ];
-  console.log(chartType);
-  
+
   return (
     <ScrollView horizontal={true}>
       {chartType == 'lineChart' ? (
@@ -137,21 +105,42 @@ const Chart = ({graphData, chartType = 'lineChart'}) => {
         <>
           <PieChart
             data={graphData}
-            width={Dimensions.get('window').width}
-            height={250}
+            // height={250-100}
+            hasLegend={true} 
+            avoidFalseZero={true}
+            width={Dimensions.get('window').width-30}
+          height={220-70}
+          yAxisLabel="₹"
+          yAxisSuffix=""
+          style={{paddingVertical:10,backgroundColor:'rgba(1, 66, 131,0.1)',borderRadius:10,margin:5}}
             chartConfig={{
-              backgroundGradientFrom: '#1E2923',
-              backgroundGradientFromOpacity: 0,
-              backgroundGradientTo: '#08130D',
-              backgroundGradientToOpacity: 0.5,
+              strokeWidth:20,
+              horizontalLabelRotation:100,
+              propsForLabels:{fontSize:20},
+              verticalLabelsHeightPercentage:10,
               color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-              strokeWidth: 2, // optional, default 3
-              barPercentage: 0.5,
+              // strokeWidth: 2, // optional, default 3
+              // barPercentage: 0.5,
               useShadowColorFromDataset: false, // optional
+              
+              propsForVerticalLabels:{
+                styles:{
+                  backgroundColor:'red'
+                },
+
+                fontStyle:{backgroundColor:'red'}
+              },
+              propsForHorizontalLabels:{
+                styles:{
+                  backgroundColor:'red'
+                },
+                fontStyle:{backgroundColor:'red'}
+
+              }
             }}
-  accessor={"population"}
-  backgroundColor={"transparent"}
-  paddingLeft={"18"}
+            accessor={accessor}
+            backgroundColor={'transparent'}
+            // padding={28}
           />
         </>
       )}

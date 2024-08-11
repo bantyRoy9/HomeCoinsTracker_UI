@@ -1,6 +1,6 @@
 import { GET_ANALYSIS_FAIL, GET_ANALYSIS_REQUEST, GET_ANALYSIS_SUCCESS } from "../constants"
 
-export const analysisReducer = (state = { analysisData: {} }, action) => {
+export const analysisReducer = (state = {}, action) => {
     switch (action.type) {
         case GET_ANALYSIS_REQUEST:
             return {
@@ -14,7 +14,7 @@ export const analysisReducer = (state = { analysisData: {} }, action) => {
         case GET_ANALYSIS_FAIL:
             return {
                 isLoading: false,
-                analysisData: {}
+                analysisData: null
             }
         default:
             return state
