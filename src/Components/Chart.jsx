@@ -109,7 +109,7 @@ const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
             hasLegend={true} 
             avoidFalseZero={true}
             width={Dimensions.get('window').width-30}
-          height={220-70}
+          height={200}
           yAxisLabel="₹"
           yAxisSuffix=""
           style={{paddingVertical:10,backgroundColor:'rgba(1, 66, 131,0.1)',borderRadius:10,margin:5}}

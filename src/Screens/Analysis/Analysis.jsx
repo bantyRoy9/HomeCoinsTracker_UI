@@ -5,13 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Chart } from '../../Components';
 import { getAnalysisData } from '../../Redux/Action/analysisAction';
 import { FeatherIcons, dateFormat, defaultStyle, stringTransform, topHomeNavList } from '../../Utils';
-const { width } = Dimensions.get('window');
 
 const Analysis = () => {
   const dispatch = useDispatch();
   const {colors} = useTheme();
+  topHomeNavList[0].active=false;
+  topHomeNavList[1].active=true;
   const {analysisData, isLoading} = useSelector(state => state.analysis);
   const [dateRange, setDateRange] = useState(topHomeNavList.filter(el => el.active == true)[0]);
+  const [activeTab,setActiveTab] = useState('earn');
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
 
@@ -61,7 +63,7 @@ const Analysis = () => {
     <View key={index} style={styles.summaryCard}>
       <Pressable>
         {/* <View><Text>{item._id.sourceType}</Text></View> */}
-        <View><Text>{item._id.sourceName}</Text></View>
+        <View><Text>{item._id[activeTab=='earn'?'sourceName':'expendName']}</Text></View>
         <View><Text>₹{item.totalAmount}</Text></View>
       </Pressable>
     </View>
@@ -97,10 +99,8 @@ const Analysis = () => {
                         />
                     </View>
                     <View>
-                        
-                            <View><Text style={{ color: colors.text }}>Earn By</Text></View>
-                            <View><Text style={{ color: colors.text }}>{item.sourceType?.sourceName}</Text></View>
-                        
+                        <View><Text style={{ color: colors.text }}>{stringTransform(activeTab,'C')} {activeTab==='earn'?'By':'To'}</Text></View>
+                        <View><Text style={{ color: colors.text }}>{activeTab == 'earn'?item.sourceType.sourceName:item.expendType?.expendName}</Text></View>
                     </View>
                 </View>
                 <View style={styles.activityRightSec}>
@@ -114,12 +114,16 @@ const Analysis = () => {
                     <Text style={{ color: colors.text }}>{item.date ? dateFormat("DD MMM YY hh:mm a", item.date) : 'NA'}</Text>
                 </View>
                 <View>
-                    <Text style={{ color: colors.text }}>{`Added By ${stringTransform(item.earnBy?.name, 'C')} `}</Text>
+                    <Text style={{ color: colors.text }}>{`Added By ${stringTransform(item[activeTab=='earn'?'earnBy':'expendBy']?.name, 'C')} `}</Text>
                 </View>
             </View>
         </Pressable>
     </View>
 );
+const handleTabPress = (type) =>{
+  setActiveTab(type);
+};
+
   return (
     <>
       <View style={{ ...styles.navigationContainer,backgroundColor: colors.HeaderBg}}>
@@ -132,8 +136,8 @@ const Analysis = () => {
           <FeatherIcons name='sliders' size={20} color={colors.HeaderText}/>
         </Pressable> */}
       </View>
-      {isLoading === false ? <>
-        <ScrollView>
+      {isLoading === false ? <> 
+      <ScrollView>
         <View>
           <FlatList
             horizontal
@@ -154,19 +158,29 @@ const Analysis = () => {
             ))}
           </View>
         </View>
-
-          <View style={styles.filterContainer}>
+        {/* <View style={styles.filterContainer}>
               <View style={styles.filterText}>
-                <Text>Earn</Text>
-                <Text>Expend</Text>
+                <Pressable onPress={()=>handleTabPress('earn')}>
+                  <Text>Earn</Text>
+                  </Pressable>
+                <Pressable onPress={()=>handleTabPress('expend')}>
+                  <Text>Expend</Text>
+                </Pressable>
               </View>
-          </View>
+          </View> */}
+          <View style={[defaultStyle.flexRow,styles.navContainer,{backgroundColor:colors.surfaceVariant,borderWidth:0,borderColor:colors.borderSecondary}]}>
+          {tabs.map(el=>(
+          <Pressable key={el.expendType} onTouchStart={()=>tabHandler(el.expendType)} style={[defaultStyle.flex1,(el.expendType === pageDetails.activeTab) && defaultColors]}>
+            <Text style={[(el.expendType === pageDetails.activeTab) && defaultColors]}>{el.expendType}</Text>
+          </Pressable>
+          ))}
+      </View>
           <View style={defaultStyle.screenContainer}>
-            <Text style={{color:colors.text,fontWeight:'bold'}}>Sources</Text>
+            <Text style={{color:colors.text,fontWeight:'bold'}}>{activeTab == 'earn'?'Sources':'Expend Types'}</Text>
           </View>
           <View>
             <FlatList
-              data={analysisData.earn.earnBySources}
+              data={analysisData[activeTab][`${activeTab}${activeTab == 'earn'?'BySources':'ByTypes'}`]}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderItem}
               onEndReachedThreshold={0.5}
@@ -181,7 +195,7 @@ const Analysis = () => {
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={analysisData?.earn?.earnByMembers}
+              data={analysisData[activeTab][`${activeTab}ByMembers`]}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderItemByUser}
               onEndReachedThreshold={0.5}
@@ -193,7 +207,7 @@ const Analysis = () => {
           </View>
           <View style={{ flex: 1 }}>
             <FlatList
-              data={analysisData.earn.recentearn}
+              data={analysisData[activeTab][`recent${activeTab}`]}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderRecentItem}
               onEndReachedThreshold={0.5}
@@ -246,8 +260,7 @@ const styles = StyleSheet.create({
   },
   filterText:{
     flexDirection:'row',
-    justifyContent:'space-evenly \
-    6',
+    justifyContent:'space-evenly',
     padding:10
   },
   summaryCard:{
