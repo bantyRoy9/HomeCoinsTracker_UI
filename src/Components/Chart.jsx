@@ -106,37 +106,43 @@ const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
           <PieChart
             data={graphData}
             // height={250-100}
-            hasLegend={true} 
+            hasLegend={true}
             avoidFalseZero={true}
-            width={Dimensions.get('window').width-30}
-          height={200}
-          yAxisLabel="₹"
-          yAxisSuffix=""
-          style={{paddingVertical:10,backgroundColor:'rgba(1, 66, 131,0.1)',borderRadius:10,margin:5}}
+            width={Dimensions.get('window').width-20}
+            height={200}
+            yAxisLabel="₹"
+            yAxisSuffix=""
+            style={{
+              paddingVertical: 10,
+              backgroundColor: 'rgba(1, 66, 131,0.1)',
+              borderRadius: 10,
+              marginTop: 10,
+              marginHorizontal: 10,
+
+            }}
             chartConfig={{
-              strokeWidth:20,
-              horizontalLabelRotation:100,
-              propsForLabels:{fontSize:20},
-              verticalLabelsHeightPercentage:10,
+              strokeWidth: 20,
+              horizontalLabelRotation: 100,
+              propsForLabels: {fontSize: 20},
+              verticalLabelsHeightPercentage: 10,
               color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
               // strokeWidth: 2, // optional, default 3
               // barPercentage: 0.5,
               useShadowColorFromDataset: false, // optional
-              
-              propsForVerticalLabels:{
-                styles:{
-                  backgroundColor:'red'
+
+              propsForVerticalLabels: {
+                styles: {
+                  backgroundColor: 'red',
                 },
 
-                fontStyle:{backgroundColor:'red'}
+                fontStyle: {backgroundColor: 'red'},
               },
-              propsForHorizontalLabels:{
-                styles:{
-                  backgroundColor:'red'
+              propsForHorizontalLabels: {
+                styles: {
+                  backgroundColor: 'red',
                 },
-                fontStyle:{backgroundColor:'red'}
-
-              }
+                fontStyle: {backgroundColor: 'red'},
+              },
             }}
             accessor={accessor}
             backgroundColor={'transparent'}

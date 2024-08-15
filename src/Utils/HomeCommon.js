@@ -1,15 +1,20 @@
 export const stringTransform = (str,transform) =>{
+    let formatedStr = str;
     if(str && transform){
         transform = transform.toUpperCase();
         switch(transform){
             case "L" :
-                return str.toLowerCase();
+                formatedStr = str.toLowerCase();
+                break;
             case "U" :
-                return str.toUpperCase();
+                formatedStr = str.toUpperCase();
+                break;
             case "C" :
-                return str.charAt(0).toUpperCase() + str.slice(1);
+                formatedStr = str.charAt(0).toUpperCase() + str.slice(1);
+                break
             default :
-                return str;
+                break;
         }
     }
+    return formatedStr
 }

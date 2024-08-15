@@ -41,7 +41,7 @@ export const getAxiosHeaderWithoutCookie = async () => {
 export const getAxiosHeader = async () => {
   try {
     const value = await AsyncStorage.getItem('cookie');
-    let header = null;
+    let header = {};
     if (value) {
       header = {
         headers: { authorization: "Bearer " + value },

@@ -11,4 +11,6 @@ import HeaderRightButton from './HeaderRightButton';
 import CustomText from './CustomText';
 import CustomSelectDate from './CustomSelectDate';
 import SelectDatePicker from './SelectDatePicker';
-export {CustomText, HeaderRightButton,Chart, DataTable, DatePicker, FloatingActionBtn, Header,CustomSelectDate, Input, Modals,SelectPicker,SelectDatePicker,Button}
+import CustomNavigationTab from './CustomNavigationTab';
+import CustomHeaderTitle from './CustomHeaderTitle';
+export {CustomHeaderTitle,CustomNavigationTab,CustomText, HeaderRightButton,Chart, DataTable, DatePicker, FloatingActionBtn, Header,CustomSelectDate, Input, Modals,SelectPicker,SelectDatePicker,Button}

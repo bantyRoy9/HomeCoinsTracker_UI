@@ -14,7 +14,7 @@ export const defaultStyle = StyleSheet.create({
   viewSection: { marginVertical: 15 },
   toHeaderContainer: { justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginTop: 20, paddingBottom: 10 },
   topHeaderTitle: { fontSize: 20, fontWeight: '600' },
-  activityIndicator: { flex: 1, justifyContent: 'center', height: 'auto' },
+  activityIndicator: { flex: 1, justifyContent: 'center', height: 'auto',opacity:0.1 },
   model: { borderColor: 'red', padding: 10, backgroundColor: 'white', marginHorizontal: 18, marginVertical: 1 },
   textBold: { fontWeight: '700', fontSize: getFontSize(16) },
   textWhite: { color: '#eeee' },

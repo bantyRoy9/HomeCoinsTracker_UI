@@ -1,6 +1,6 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect,memo } from 'react'
-import { FeatherIcons, FontAwesome, defaultStyle, homeNavList } from '../../Utils'
+import { FeatherIcons, FontAwesome, defaultStyle, topHomeNavList } from '../../Utils'
 import { Chart, DataTable } from '../../Components'
 import { useTheme } from 'react-native-paper'
 import { useSelector } from 'react-redux'
@@ -44,7 +44,7 @@ const Monthly = ({dateRange,monthlyHandle}) => {
                 <View>
                   {!isLoading && account && account?.analyticsDetail && <>
                     {Object.keys(account?.analyticsDetail).map((el, idx) => (
-                      <View key={idx + homeNavList.length} style={styles.analyticsDetails}>
+                      <View key={idx + topHomeNavList.length} style={styles.analyticsDetails}>
                         <View><Text style={{ ...styles.analyticsText, color: colors.text }}>{el}</Text></View>
                         <View><Text style={{ ...styles.analyticsText, color: colors.text }}>{account.analyticsDetail[el] ? `₹ ${account.analyticsDetail[el]}` : '- - -'}</Text></View>
                       </View>

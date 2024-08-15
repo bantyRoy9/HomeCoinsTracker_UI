@@ -2,37 +2,36 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { Chart } from '../../Components';
+import { Chart, CustomHeaderTitle, CustomNavigationTab } from '../../Components';
 import { getAnalysisData } from '../../Redux/Action/analysisAction';
-import { FeatherIcons, dateFormat, defaultStyle, stringTransform, topHomeNavList } from '../../Utils';
-
+import { FeatherIcons, dateFormat, defaultStyle, stringTransform, AnalysisNavList} from '../../Utils';
+import Modal from '../../Components/Modal';
+import AnalysisByMember from './AnalysisByMember';
 const Analysis = () => {
-  const dispatch = useDispatch();
-  const {colors} = useTheme();
-  topHomeNavList[0].active=false;
-  topHomeNavList[1].active=true;
-  const {analysisData, isLoading} = useSelector(state => state.analysis);
-  const [dateRange, setDateRange] = useState(topHomeNavList.filter(el => el.active == true)[0]);
-  const [activeTab,setActiveTab] = useState('earn');
+  const dispatch = useDispatch(),{colors} = useTheme();
+  const tabs = [{expendType:"earn",active:true,details:{}},{expendType:"expend",active:false,details:{}}];
+  const {analysisData,analysisSource, isLoading} = useSelector(state => state.analysis);
+  const [dateRange, setDateRange] = useState(AnalysisNavList.filter(el => el.active == true)[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-
-  useEffect(() => {
-    dispatch(getAnalysisData(dateRange.dateRange, false));
-  }, [dateRange]);
-
-  const navPressHandle = navPress => {
-    topHomeNavList.map(el =>el.label === navPress.label ? (el.active = true) : (el.active = false));
-    setDateRange(navPress);
+  const [activeTab, setActiveTab] = useState(tabs[0].expendType);
+  const [analysisType,setAnalysisType] = useState({type:'',id:''});
+  const handleTabChange = (expendType) => {
+      setActiveTab(expendType);
   };
+  console.log(analysisSource,"analysisSource");
+  
   useEffect(() => {
-    // Automatically scroll to next item every 3 seconds
+    dispatch(getAnalysisData(dateRange.dateRange, false,analysisType.type,analysisType.id));
+  }, [dateRange,analysisType.id]);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       scrollToNext();
     }, 5000);
-    
-    return () => clearInterval(intervalId); // Cleanup on unmount
+    return () => clearInterval(intervalId); 
   }, [currentIndex]);
+
   const scrollToNext = () => {
     if (flatListRef.current) {
       const nextIndex = currentIndex + 1 < analysisData?.graphdata.length ? currentIndex + 1 : 0;
@@ -40,6 +39,19 @@ const Analysis = () => {
       setCurrentIndex(nextIndex);
     }
   };
+
+  const [modalVisible,setModalVisible] = useState(false);
+  const modalVisibleHandler = (type,id) =>{
+    console.log({type,id});
+    
+    setAnalysisType({type,id});
+    setModalVisible(prev=>!prev);
+  }
+  const navPressHandle = navPress => {
+    AnalysisNavList.map(el =>el.label === navPress.label ? (el.active = true) : (el.active = false));
+    setDateRange(navPress);
+  };
+   
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
@@ -47,22 +59,19 @@ const Analysis = () => {
   }).current;
 
   const renderItemByUser = ({item, index}) => (
-    <Pressable key={index} style={styles.summaryCard}>
+    <Pressable key={index} style={styles.summaryCard} onPress={()=>modalVisibleHandler(activeTab=='earn'?'earnBy':'expendBy',item._id.id)}>
       <View style={styles.activityProfileList}>
-                        <Image source={require('../../../Assets/profiles/default.png')}
-                            style={{ width: 40, height: 40, borderRadius: 8 }}
-                        />
-                    </View>
+        <Image source={require('../../../Assets/profiles/default.png')} style={{ width: 40, height: 40, borderRadius: 8 }}/>
+      </View>
       <View>
         <View><Text>{item._id.name}</Text></View>
         <View><Text>₹{item.totalAmount}</Text></View>
-    </View>
-      </Pressable>
+      </View>
+    </Pressable>
   );
-  const renderItem = ({item, index}) => (
+  const renderItemBySources = ({item, index}) => (
     <View key={index} style={styles.summaryCard}>
-      <Pressable>
-        {/* <View><Text>{item._id.sourceType}</Text></View> */}
+      <Pressable onPress={()=>modalVisibleHandler('source',item._id.id)}>
         <View><Text>{item._id[activeTab=='earn'?'sourceName':'expendName']}</Text></View>
         <View><Text>₹{item.totalAmount}</Text></View>
       </Pressable>
@@ -71,17 +80,15 @@ const Analysis = () => {
 
   const renderChartList = ({item, index}) => {
     let accessor = 'earn';
-    if(index >1){
-      accessor = 'expend'
-    }
+    if(index >1) accessor = 'expend';
     return (
       <>
         <View style={{...styles.chartContiner}}>
           <View style={{justifyContent:'center',position:'relative'}}>
             <Chart graphData={item} chartType="barChart" accessor={accessor}/>
-            <View style={{flexDirection:'row',position:'absolute',top:10,left:15,gap:5}}>
+            <View style={{flexDirection:'row',position:'absolute',top:18,left:18,gap:5}}>
             {index <1 ? <Text>🟢</Text> :<Text>🔴</Text>}
-            <Text style={{textAlign:'center',color:colors.HeaderBg,fontSize:12}}>{index==0?"Earn By Source":index==1?"Earn By Memebers":index==2?"Expend by types":"Expend By memebers"}</Text>
+            <Text style={{textAlign:'center',color:colors.HeaderBg,fontSize:13}}>{index==0?"Earn By Source":index==1?"Earn By Memebers":index==2?"Expend by types":"Expend By memebers"}</Text>
             </View>
           </View>
         </View>
@@ -120,100 +127,37 @@ const Analysis = () => {
         </Pressable>
     </View>
 );
-const handleTabPress = (type) =>{
-  setActiveTab(type);
-};
 
   return (
     <>
       <View style={{ ...styles.navigationContainer,backgroundColor: colors.HeaderBg}}>
-        {topHomeNavList.map((ele, idx) => ( ele.label !=="Daily" &&<Pressable onPress={() => navPressHandle(ele)} key={`${ele.label}_${idx}`} style={{flex: 1}}>
+        {AnalysisNavList.map((ele, idx) => ( ele.label !=="Daily" &&<Pressable onPress={() => navPressHandle(ele)} key={`${ele.label}_${idx}`} style={{flex: 1}}>
           <Text style={ele.active? {...styles.navText,color: colors.HeaderText,borderBottomColor: colors.notification,borderBottomWidth: 2} : {...styles.navText, color: colors.HeaderText}}>
               {ele.label}
           </Text>
         </Pressable>))}
-        {/* <Pressable>
-          <FeatherIcons name='sliders' size={20} color={colors.HeaderText}/>
-        </Pressable> */}
       </View>
       {isLoading === false ? <> 
       <ScrollView>
+        {/* Chart container */}
         <View>
-          <FlatList
-            horizontal
-            ref={flatListRef}
-            pagingEnabled
-            data={analysisData.graphdata}
-            keyExtractor={(item, indx) => indx.toString()}
-            renderItem={renderChartList}
-            onEndReachedThreshold={0.5}
-            showsHorizontalScrollIndicator={false}
-            decelerationRate="fast"
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}
-          />
+          <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData?.graphdata??[]} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}/>
           <View style={styles.paginationContainer}>
-            {analysisData.graphdata.map((_, idx) => (
-              <View key={idx} style={[styles.dot,currentIndex === idx && styles.activeDot]}/>
-            ))}
+            {analysisData.graphdata.map((_, idx) => (<View key={idx} style={[styles.dot,currentIndex === idx && styles.activeDot]}/>))}
           </View>
         </View>
-        {/* <View style={styles.filterContainer}>
-              <View style={styles.filterText}>
-                <Pressable onPress={()=>handleTabPress('earn')}>
-                  <Text>Earn</Text>
-                  </Pressable>
-                <Pressable onPress={()=>handleTabPress('expend')}>
-                  <Text>Expend</Text>
-                </Pressable>
-              </View>
-          </View> */}
-          <View style={[defaultStyle.flexRow,styles.navContainer,{backgroundColor:colors.surfaceVariant,borderWidth:0,borderColor:colors.borderSecondary}]}>
-          {tabs.map(el=>(
-          <Pressable key={el.expendType} onTouchStart={()=>tabHandler(el.expendType)} style={[defaultStyle.flex1,(el.expendType === pageDetails.activeTab) && defaultColors]}>
-            <Text style={[(el.expendType === pageDetails.activeTab) && defaultColors]}>{el.expendType}</Text>
-          </Pressable>
-          ))}
-      </View>
-          <View style={defaultStyle.screenContainer}>
-            <Text style={{color:colors.text,fontWeight:'bold'}}>{activeTab == 'earn'?'Sources':'Expend Types'}</Text>
-          </View>
-          <View>
-            <FlatList
-              data={analysisData[activeTab][`${activeTab}${activeTab == 'earn'?'BySources':'ByTypes'}`]}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderItem}
-              onEndReachedThreshold={0.5}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
-          </View>
-          <View style={defaultStyle.screenContainer}>
-            <Text style={{color:colors.text,fontWeight:'bold'}}>Memebers</Text>
-          </View>
-          <View>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={analysisData[activeTab][`${activeTab}ByMembers`]}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderItemByUser}
-              onEndReachedThreshold={0.5}
-              // ListFooterComponent={renderFooter}
-            />
-          </View>
-          <View style={defaultStyle.screenContainer}>
-            <Text style={{color:colors.text,fontWeight:'bold'}}>Recent Summary</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={analysisData[activeTab][`recent${activeTab}`]}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderRecentItem}
-              onEndReachedThreshold={0.5}
-            />
-          </View>
+        {/* summary container */}
+        <View style={defaultStyle.screenContainer}>
+          <CustomNavigationTab tabs={tabs} activeTab={activeTab} tabHandler={handleTabChange} />
+          <CustomHeaderTitle colors={colors} title={activeTab == 'earn'?'Sources':'Expend Types'}/>
+          <FlatList data={analysisData[activeTab][`${activeTab}${activeTab == 'earn'?'BySources':'ByTypes'}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemBySources} onEndReachedThreshold={0.5} horizontal showsHorizontalScrollIndicator={false}/>
+          <CustomHeaderTitle colors={colors} title='Memebers'/>
+          <FlatList horizontal showsHorizontalScrollIndicator={false} data={analysisData[activeTab][`${activeTab}ByMembers`]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemByUser} onEndReachedThreshold={0.5}/>
+          <CustomHeaderTitle colors={colors} title='Recent Summary'/>
+          <FlatList data={analysisData[activeTab][`recent${activeTab}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5}/>
+        </View>
         </ScrollView>
+        <Modal Component={<AnalysisByMember type={activeTab}/>} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
         </>
        : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }
@@ -238,7 +182,7 @@ const styles = StyleSheet.create({
   chartContiner: {
     display: 'flex',
     flexDirection: 'row',
-    paddingHorizontal:10
+    // paddingHorizontal:10
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -293,4 +237,10 @@ activityProfileList: {
     borderRadius: 50,
     backgroundColor: "#3d3d3d"
 },
+navContainer:{
+  marginBottom:5,
+  paddingVertical:5,
+  paddingHorizontal:10,
+  borderRadius:5
+}
 });
