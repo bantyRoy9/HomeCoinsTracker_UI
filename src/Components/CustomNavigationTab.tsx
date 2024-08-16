@@ -15,16 +15,16 @@ const CustomNavigationTab: React.FC<TCustomNavigationTab> = ({ tabs, tabHandler,
         <View style={[defaultStyle.flexRow, styles.navContainer, { backgroundColor: colors.surfaceVariant }]}>
             {tabs.map((el) => (
                 <Pressable
-                    key={el.expendType}
-                    onPress={() => tabHandler(el.expendType)}
+                    key={el.tab}
+                    onPress={() => tabHandler(el.tab)}
                     style={[
                         defaultStyle.flex1,
-                        el.expendType === activeTab && defaultColors,
+                        el.tab === activeTab && defaultColors,
                         styles.tab
                     ]}
                 >
-                    <Text style={[el.expendType === activeTab && defaultColors, styles.tabText]}>
-                        {el.expendType}
+                    <Text style={[el.tab === activeTab && defaultColors, styles.tabText]}>
+                        {el.tab}
                     </Text>
                 </Pressable>
             ))}

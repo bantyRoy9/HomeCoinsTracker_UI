@@ -1,79 +1,82 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { Chart, CustomHeaderTitle, CustomNavigationTab } from '../../Components';
+import { Chart, CustomHeaderTitle, CustomNavigationTab, CustomText } from '../../Components';
 import { getAnalysisData } from '../../Redux/Action/analysisAction';
 import { FeatherIcons, dateFormat, defaultStyle, stringTransform, AnalysisNavList} from '../../Utils';
 import Modal from '../../Components/Modal';
 import AnalysisByMember from './AnalysisByMember';
 const Analysis = () => {
   const dispatch = useDispatch(),{colors} = useTheme();
-  const tabs = [{expendType:"earn",active:true,details:{}},{expendType:"expend",active:false,details:{}}];
+  const tabs = [{tab:"earn",active:true,details:{}},{tab:"expend",active:false,details:{}}];
   const {analysisData,analysisSource, isLoading} = useSelector(state => state.analysis);
   const [dateRange, setDateRange] = useState(AnalysisNavList.filter(el => el.active == true)[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-  const [activeTab, setActiveTab] = useState(tabs[0].expendType);
+  const [activeTab, setActiveTab] = useState(tabs[0].tab);
   const [analysisType,setAnalysisType] = useState({type:'',id:''});
-  const handleTabChange = (expendType) => {
-      setActiveTab(expendType);
-  };
-  console.log(analysisSource,"analysisSource");
+  const [modalVisible,setModalVisible] = useState(false);
+
+  console.log(analysisData,"analysisSource",currentIndex);
   
-  useEffect(() => {
-    dispatch(getAnalysisData(dateRange.dateRange, false,analysisType.type,analysisType.id));
-  }, [dateRange,analysisType.id]);
+  const handleTabChange = useCallback((expendType) => {
+    setActiveTab(expendType);
+  }, []);
+
+  const modalVisibleHandler = useCallback((type, id) => {
+    setAnalysisType({ type, id });
+    setModalVisible(prev => !prev);
+  }, []);
+
+  const navPressHandle = useCallback((navPress) => {
+    AnalysisNavList.forEach(el => el.active = el.label === navPress.label);
+    setDateRange(navPress);
+  }, []);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      scrollToNext();
-    }, 5000);
-    return () => clearInterval(intervalId); 
-  }, [currentIndex]);
+    if (dateRange) {
+      dispatch(getAnalysisData(dateRange.dateRange, false, analysisType.type, analysisType.id));
+    }
+  }, [dateRange, analysisType.id]);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(scrollToNext, 5000);
+  //   return () => clearInterval(intervalId);
+  // }, [currentIndex]);
 
   const scrollToNext = () => {
-    if (flatListRef.current) {
-      const nextIndex = currentIndex + 1 < analysisData?.graphdata.length ? currentIndex + 1 : 0;
+    if (flatListRef.current && analysisData?.graphdata.length) {
+      const nextIndex = currentIndex + 1 < analysisData.graphdata.length ? currentIndex + 1 : 0;
       flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
       setCurrentIndex(nextIndex);
     }
   };
 
-  const [modalVisible,setModalVisible] = useState(false);
-  const modalVisibleHandler = (type,id) =>{
-    console.log({type,id});
-    
-    setAnalysisType({type,id});
-    setModalVisible(prev=>!prev);
-  }
-  const navPressHandle = navPress => {
-    AnalysisNavList.map(el =>el.label === navPress.label ? (el.active = true) : (el.active = false));
-    setDateRange(navPress);
-  };
-   
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
     }
   }).current;
 
+ 
+
   const renderItemByUser = ({item, index}) => (
-    <Pressable key={index} style={styles.summaryCard} onPress={()=>modalVisibleHandler(activeTab=='earn'?'earnBy':'expendBy',item._id.id)}>
+    <Pressable key={index} style={[styles.summaryCard,{backgroundColor:colors.card}]} onPress={()=>modalVisibleHandler(activeTab=='earn'?'earnBy':'expendBy',item._id.id)}>
       <View style={styles.activityProfileList}>
         <Image source={require('../../../Assets/profiles/default.png')} style={{ width: 40, height: 40, borderRadius: 8 }}/>
       </View>
       <View>
-        <View><Text>{item._id.name}</Text></View>
-        <View><Text>₹{item.totalAmount}</Text></View>
+      <CustomText title={item._id.name}/>
+      <CustomText title={`₹${item.totalAmount}`}/>
       </View>
     </Pressable>
   );
   const renderItemBySources = ({item, index}) => (
-    <View key={index} style={styles.summaryCard}>
+    <View key={index} style={[styles.summaryCard,{backgroundColor:colors.card}]}>
       <Pressable onPress={()=>modalVisibleHandler('source',item._id.id)}>
-        <View><Text>{item._id[activeTab=='earn'?'sourceName':'expendName']}</Text></View>
-        <View><Text>₹{item.totalAmount}</Text></View>
+        <CustomText title={item._id[activeTab=='earn'?'sourceName':'expendName']}/>
+        <CustomText title={`₹${item.totalAmount}`}/>
       </Pressable>
     </View>
   );
@@ -88,7 +91,7 @@ const Analysis = () => {
             <Chart graphData={item} chartType="barChart" accessor={accessor}/>
             <View style={{flexDirection:'row',position:'absolute',top:18,left:18,gap:5}}>
             {index <1 ? <Text>🟢</Text> :<Text>🔴</Text>}
-            <Text style={{textAlign:'center',color:colors.HeaderBg,fontSize:13}}>{index==0?"Earn By Source":index==1?"Earn By Memebers":index==2?"Expend by types":"Expend By memebers"}</Text>
+            <Text style={{textAlign:'center',color:colors.text,fontSize:13}}>{index==0?"Earn By Source":index==1?"Earn By Memebers":index==2?"Expend by types":"Expend By memebers"}</Text>
             </View>
           </View>
         </View>
@@ -141,10 +144,10 @@ const Analysis = () => {
       <ScrollView>
         {/* Chart container */}
         <View>
-          <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData?.graphdata??[]} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}/>
-          <View style={styles.paginationContainer}>
-            {analysisData.graphdata.map((_, idx) => (<View key={idx} style={[styles.dot,currentIndex === idx && styles.activeDot]}/>))}
-          </View>
+          <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData.graphdata} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}/>
+          {/* <View style={styles.paginationContainer}>
+            {analysisData?.graphdata?.map((_, idx) => (<View key={idx} style={[styles.dot,currentIndex === idx && styles.activeDot]}/>))}
+          </View> */}
         </View>
         {/* summary container */}
         <View style={defaultStyle.screenContainer}>
@@ -208,7 +211,6 @@ const styles = StyleSheet.create({
     padding:10
   },
   summaryCard:{
-    backgroundColor:'rgba(1, 66, 131,0.1)',
     borderWidth:1,
     borderColor:'rgba(1, 66, 131,0.1)',
     paddingVertical:10,

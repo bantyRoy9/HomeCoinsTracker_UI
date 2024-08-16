@@ -5,7 +5,7 @@ import { defaultStyle } from '../Utils';
 import { ICustomText } from './Types';
 
 const CustomText:FC<ICustomText> = ({title,fontSize=15,color,style={}}) => {
-    const colors = useTheme() as any;
+    const {colors} = useTheme() as any;
   return (
     <View>
       <Text style={[style,defaultStyle.text,{color:color || colors.text,fontSize:fontSize}]}>{title}</Text>

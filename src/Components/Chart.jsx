@@ -104,7 +104,7 @@ const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
       ) : (
         <>
           <PieChart
-            data={graphData}
+            data={graphData.map(el=>({...el,legendFontColor:backgroundStyle.color}))}
             // height={250-100}
             hasLegend={true}
             avoidFalseZero={true}
@@ -114,11 +114,10 @@ const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
             yAxisSuffix=""
             style={{
               paddingVertical: 10,
-              backgroundColor: 'rgba(1, 66, 131,0.1)',
-              borderRadius: 10,
+              backgroundColor: backgroundStyle.backgroundColor,
+              borderRadius: 12,
               marginTop: 10,
               marginHorizontal: 10,
-
             }}
             chartConfig={{
               strokeWidth: 20,
@@ -126,23 +125,8 @@ const Chart = ({graphData, chartType = 'lineChart', accessor}) => {
               propsForLabels: {fontSize: 20},
               verticalLabelsHeightPercentage: 10,
               color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-              // strokeWidth: 2, // optional, default 3
-              // barPercentage: 0.5,
-              useShadowColorFromDataset: false, // optional
-
-              propsForVerticalLabels: {
-                styles: {
-                  backgroundColor: 'red',
-                },
-
-                fontStyle: {backgroundColor: 'red'},
-              },
-              propsForHorizontalLabels: {
-                styles: {
-                  backgroundColor: 'red',
-                },
-                fontStyle: {backgroundColor: 'red'},
-              },
+              labelColor:colors.text,
+              
             }}
             accessor={accessor}
             backgroundColor={'transparent'}

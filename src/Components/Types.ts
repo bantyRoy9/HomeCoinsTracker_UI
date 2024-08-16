@@ -1,6 +1,6 @@
 
 export interface ICustomerNavigationTabList {
-  expendType: string;
+  tab: string;
   active: boolean;
   details: Details;
 };

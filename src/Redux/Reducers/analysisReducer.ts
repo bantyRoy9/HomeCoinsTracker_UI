@@ -1,6 +1,27 @@
 import { GET_ANALYSIS_FAIL, GET_ANALYSIS_REQUEST, GET_ANALYSIS_SUCCESS, GET_ANALYSISEARNBY_FAIL, GET_ANALYSISEARNBY_REQUEST, GET_ANALYSISEARNBY_SUCCESS, GET_ANALYSISEXPENDBY_FAIL, GET_ANALYSISEXPENDBY_REQUEST, GET_ANALYSISEXPENDBY_SUCCESS, GET_ANALYSISEXPENDTYPE_FAIL, GET_ANALYSISEXPENDTYPE_REQUEST, GET_ANALYSISEXPENDTYPE_SUCCESS, GET_ANALYSISSOURCE_FAIL, GET_ANALYSISSOURCE_REQUEST, GET_ANALYSISSOURCE_SUCCESS, } from "../constants"
-
-export const analysisReducer = (state = {}, action:any) => {
+const dataResponse = {
+    earn:{
+        totalearn:0,
+        earnBySource:[],
+        earnByMembers:[],
+        recentearn:[]
+    },
+    expend:{
+        totalexpend:0,
+        expendByTypes: [],
+        expendByMembers: [],
+        recentexpend: []
+    },
+    graphdata:[]
+}
+const initialState = {
+    analysisData:dataResponse,
+    analysisEarnBy:dataResponse,
+    analysisExpendBy:dataResponse,
+    analysisSource:dataResponse,
+    analysisExpendType:dataResponse
+}
+export const analysisReducer = (state = initialState, action:any) => {
     switch (action.type) {
         case GET_ANALYSIS_REQUEST:
         // case GET_ANALYSISEARNBY_REQUEST:
@@ -31,11 +52,13 @@ export const analysisReducer = (state = {}, action:any) => {
             }
         case GET_ANALYSISSOURCE_SUCCESS:
             return{
+                ...state,
                 isLoading:false,
                 analysisSource:action.payload
             }
         case GET_ANALYSISEXPENDTYPE_SUCCESS:
             return{
+                ...state,
                 isLoading:false,
                 analysisExpendType:action.payload
             }
