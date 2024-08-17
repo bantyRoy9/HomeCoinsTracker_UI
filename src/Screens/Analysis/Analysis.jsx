@@ -18,7 +18,6 @@ const Analysis = () => {
   const [analysisType,setAnalysisType] = useState({type:'',id:''});
   const [modalVisible,setModalVisible] = useState(false);
 
-  console.log(analysisData,"analysisSource",currentIndex);
   
   const handleTabChange = useCallback((expendType) => {
     setActiveTab(expendType);
@@ -40,10 +39,10 @@ const Analysis = () => {
     }
   }, [dateRange, analysisType.id]);
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(scrollToNext, 5000);
-  //   return () => clearInterval(intervalId);
-  // }, [currentIndex]);
+  useEffect(() => {
+    const intervalId = setInterval(scrollToNext, 5000);
+    return () => clearInterval(intervalId);
+  }, [currentIndex]);
 
   const scrollToNext = () => {
     if (flatListRef.current && analysisData?.graphdata.length) {
@@ -104,20 +103,19 @@ const Analysis = () => {
             <View style={styles.activityList}>
                 <View style={styles.activityLeftSec}>
                     <View style={styles.activityProfileList}>
-                        <Image source={require('../../../Assets/profiles/default.png')}
-                            style={{ width: 40, height: 40, borderRadius: 8 }}
-                        />
+                        <Image source={require('../../../Assets/profiles/default.png')} style={{ width: 40, height: 40, borderRadius: 8 }}/>
                     </View>
                     <View>
-                        <View><Text style={{ color: colors.text }}>{stringTransform(activeTab,'C')} {activeTab==='earn'?'By':'To'}</Text></View>
-                        <View><Text style={{ color: colors.text }}>{activeTab == 'earn'?item.sourceType.sourceName:item.expendType?.expendName}</Text></View>
+                        <CustomText style={{ color: colors.text }} title={`${stringTransform(activeTab,'C')} ${activeTab==='earn'?'By':'To'}`}/>
+                        <CustomText style={{ color: colors.text }} title={activeTab == 'earn'?item.sourceType.sourceName:item.expendType?.expendName}/>
                     </View>
                 </View>
-                <View style={styles.activityRightSec}>
+                <CustomText viewStyle={styles.activityRightSec} style={{ color: colors.success }} title={`${'+ ₹' + (item?.amount ?? "NA")} `}/>
+                {/* <View style={styles.activityRightSec}>
                     <Text style={{ color: colors.success }}>
                         {`${'+ ₹' + (item?.amount ?? "NA")} `}
                     </Text>
-                </View>
+                </View> */}
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
@@ -135,9 +133,7 @@ const Analysis = () => {
     <>
       <View style={{ ...styles.navigationContainer,backgroundColor: colors.HeaderBg}}>
         {AnalysisNavList.map((ele, idx) => ( ele.label !=="Daily" &&<Pressable onPress={() => navPressHandle(ele)} key={`${ele.label}_${idx}`} style={{flex: 1}}>
-          <Text style={ele.active? {...styles.navText,color: colors.HeaderText,borderBottomColor: colors.notification,borderBottomWidth: 2} : {...styles.navText, color: colors.HeaderText}}>
-              {ele.label}
-          </Text>
+          <CustomText title={ele.label} style={ele.active? {...styles.navText,color: colors.HeaderText,borderBottomColor: colors.notification,borderBottomWidth: 2} : {...styles.navText, color: colors.HeaderText}}/>
         </Pressable>))}
       </View>
       {isLoading === false ? <> 
@@ -145,9 +141,9 @@ const Analysis = () => {
         {/* Chart container */}
         <View>
           <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData.graphdata} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}/>
-          {/* <View style={styles.paginationContainer}>
+          <View style={styles.paginationContainer}>
             {analysisData?.graphdata?.map((_, idx) => (<View key={idx} style={[styles.dot,currentIndex === idx && styles.activeDot]}/>))}
-          </View> */}
+          </View>
         </View>
         {/* summary container */}
         <View style={defaultStyle.screenContainer}>

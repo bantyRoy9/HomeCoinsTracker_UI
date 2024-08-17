@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { useTheme } from 'react-native-paper';
 import { defaultStyle } from '../Utils';
 import { TCustomNavigationTab } from './Types';
+import CustomText from './CustomText';
 
 const CustomNavigationTab: React.FC<TCustomNavigationTab> = ({ tabs, tabHandler, activeTab }) => {
     const { colors } = useTheme() as any;
@@ -14,18 +15,8 @@ const CustomNavigationTab: React.FC<TCustomNavigationTab> = ({ tabs, tabHandler,
     return (
         <View style={[defaultStyle.flexRow, styles.navContainer, { backgroundColor: colors.surfaceVariant }]}>
             {tabs.map((el) => (
-                <Pressable
-                    key={el.tab}
-                    onPress={() => tabHandler(el.tab)}
-                    style={[
-                        defaultStyle.flex1,
-                        el.tab === activeTab && defaultColors,
-                        styles.tab
-                    ]}
-                >
-                    <Text style={[el.tab === activeTab && defaultColors, styles.tabText]}>
-                        {el.tab}
-                    </Text>
+                <Pressable key={el.tab} onPress={() => tabHandler(el.tab)} style={[defaultStyle.flex1,el.tab === activeTab && defaultColors,styles.tab]}>
+                    <CustomText title={el.tab} color={defaultColors.color} style={[el.tab === activeTab && defaultColors, styles.tabText]} />
                 </Pressable>
             ))}
         </View>

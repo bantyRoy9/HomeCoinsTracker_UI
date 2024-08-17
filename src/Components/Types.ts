@@ -15,8 +15,9 @@ export type TCustomNavigationTab = {
 };
 export interface ICustomText {
   title: string;
-  fontSize: number;
-  color: string;
-  style: any;
+  fontSize?: number;
+  color?: string;
+  style?: any;
+  viewStyle?:any
 };
 
