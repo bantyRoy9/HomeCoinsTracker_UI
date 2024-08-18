@@ -10,7 +10,7 @@ import AnalysisByMember from './AnalysisByMember';
 const Analysis = () => {
   const dispatch = useDispatch(),{colors} = useTheme();
   const tabs = [{tab:"earn",active:true,details:{}},{tab:"expend",active:false,details:{}}];
-  const {analysisData,analysisSource, isLoading} = useSelector(state => state.analysis);
+  const {analysisData,analysisSource,analysisEarnBy,analysisExpendBy,analysisExpendType, isLoading} = useSelector(state => state.analysis);
   const [dateRange, setDateRange] = useState(AnalysisNavList.filter(el => el.active == true)[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
@@ -18,13 +18,9 @@ const Analysis = () => {
   const [analysisType,setAnalysisType] = useState({type:'',id:''});
   const [modalVisible,setModalVisible] = useState(false);
 
-  
-  const handleTabChange = useCallback((expendType) => {
-    setActiveTab(expendType);
-  }, []);
-
+  const handleTabChange = useCallback((expendType) => setActiveTab(expendType), []);
   const modalVisibleHandler = useCallback((type, id) => {
-    setAnalysisType({ type, id });
+    type && setAnalysisType({ type, id });
     setModalVisible(prev => !prev);
   }, []);
 
@@ -39,10 +35,10 @@ const Analysis = () => {
     }
   }, [dateRange, analysisType.id]);
 
-  useEffect(() => {
-    const intervalId = setInterval(scrollToNext, 5000);
-    return () => clearInterval(intervalId);
-  }, [currentIndex]);
+  // useEffect(() => {
+  //   const intervalId = setInterval(scrollToNext, 5000);
+  //   return () => clearInterval(intervalId);
+  // }, [currentIndex]);
 
   const scrollToNext = () => {
     if (flatListRef.current && analysisData?.graphdata.length) {
@@ -111,11 +107,6 @@ const Analysis = () => {
                     </View>
                 </View>
                 <CustomText viewStyle={styles.activityRightSec} style={{ color: colors.success }} title={`${'+ ₹' + (item?.amount ?? "NA")} `}/>
-                {/* <View style={styles.activityRightSec}>
-                    <Text style={{ color: colors.success }}>
-                        {`${'+ ₹' + (item?.amount ?? "NA")} `}
-                    </Text>
-                </View> */}
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
@@ -156,7 +147,7 @@ const Analysis = () => {
           <FlatList data={analysisData[activeTab][`recent${activeTab}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5}/>
         </View>
         </ScrollView>
-        <Modal Component={<AnalysisByMember type={activeTab}/>} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
+        <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type}/>} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
         </>
        : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }

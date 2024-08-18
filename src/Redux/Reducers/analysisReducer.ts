@@ -16,10 +16,10 @@ const dataResponse = {
 }
 const initialState = {
     analysisData:dataResponse,
-    analysisEarnBy:dataResponse,
-    analysisExpendBy:dataResponse,
-    analysisSource:dataResponse,
-    analysisExpendType:dataResponse
+    analysisearnBy:dataResponse,
+    analysisexpendBy:dataResponse,
+    analysissource:dataResponse,
+    analysisexpendType:dataResponse
 }
 export const analysisReducer = (state = initialState, action:any) => {
     switch (action.type) {
