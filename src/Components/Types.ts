@@ -14,7 +14,7 @@ export type TCustomNavigationTab = {
   activeTab: string;
 };
 export interface ICustomText {
-  title: string;
+  title: string | number;
   fontSize?: number;
   color?: string;
   style?: any;

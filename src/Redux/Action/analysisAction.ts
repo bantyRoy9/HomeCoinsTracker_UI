@@ -4,10 +4,10 @@ import { accountControllerURL, getAxiosHeader, showAlert, stringTransform, userC
 export const getAnalysisData = (daterange:string,isUserType:boolean,type:'source' | 'earnBy' | 'expendBy' | 'expendtype',id?:string) =>async(dispatch:any) =>{
     try{
         dispatch({type:`GET_ANALYSIS${stringTransform(type,'U')}_REQUEST`});
-        
-        console.log(`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? `&${type}=${id}`:''}`);
+        console.log(`GET_ANALYSIS${stringTransform(type,'U')}_REQUEST`,`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? `&${type}=${id}`:''}`);
         const {data} = await axios.get(`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? '&='+id+'':''}`, await getAxiosHeader());
         if(data.status){
+            // console.log(`GET_ANALYSIS${stringTransform(type,'U')}_SUCCESS`);
             dispatch({type:`GET_ANALYSIS${stringTransform(type,'U')}_SUCCESS`,payload:data.data});
         }
     }catch(err:any){

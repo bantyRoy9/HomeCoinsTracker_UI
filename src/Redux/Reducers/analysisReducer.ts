@@ -42,25 +42,25 @@ export const analysisReducer = (state = initialState, action:any) => {
             return {
                 ...state,
                 isLoading:false,
-                analysisEarnBy:action.payload
+                analysisearnBy:action.payload
             }
         case GET_ANALYSISEXPENDBY_SUCCESS:
             return{
                 ...state,
                 isLoading:false,
-                analysisExpendBy:action.payload
+                analysisexpendBy:action.payload
             }
         case GET_ANALYSISSOURCE_SUCCESS:
             return{
                 ...state,
                 isLoading:false,
-                analysisSource:action.payload
+                analysissource:action.payload
             }
         case GET_ANALYSISEXPENDTYPE_SUCCESS:
             return{
                 ...state,
                 isLoading:false,
-                analysisExpendType:action.payload
+                analysisexpendType:action.payload
             }
         case GET_ANALYSIS_FAIL:
         case GET_ANALYSISEARNBY_FAIL:
@@ -70,10 +70,10 @@ export const analysisReducer = (state = initialState, action:any) => {
             return {
                 isLoading: false,
                 analysisData: null,
-                analysisEarnBy:null,
-                analysisExpendBy:null,
-                analysisSource:null,
-                analysisExpendType:null
+                analysisearnBy:null,
+                analysisexpendBy:null,
+                analysissource:null,
+                analysisexpendType:null
             }
         default:
             return state

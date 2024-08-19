@@ -20,7 +20,9 @@ const Analysis = () => {
 
   const handleTabChange = useCallback((expendType) => setActiveTab(expendType), []);
   const modalVisibleHandler = useCallback((type, id) => {
-    type && setAnalysisType({ type, id });
+    console.log(typeof(type),"tytpe");
+    
+    typeof(type) == 'string' && setAnalysisType({ type, id });
     setModalVisible(prev => !prev);
   }, []);
 
