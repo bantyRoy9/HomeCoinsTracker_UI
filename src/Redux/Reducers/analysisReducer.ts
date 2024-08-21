@@ -15,6 +15,8 @@ const dataResponse = {
     graphdata:[]
 }
 const initialState = {
+    isIndvidualLoading:false,
+    isLoading:false,
     analysisData:dataResponse,
     analysisearnBy:dataResponse,
     analysisexpendBy:dataResponse,
@@ -24,13 +26,17 @@ const initialState = {
 export const analysisReducer = (state = initialState, action:any) => {
     switch (action.type) {
         case GET_ANALYSIS_REQUEST:
-        // case GET_ANALYSISEARNBY_REQUEST:
-        // case GET_ANALYSISEXPENDBY_REQUEST:
-        // case GET_ANALYSISEXPENDTYPE_REQUEST:
-        // case GET_ANALYSISSOURCE_REQUEST:
             return {
                 ...state,
                 isLoading: true
+            }
+        case GET_ANALYSISEARNBY_REQUEST:
+        case GET_ANALYSISEXPENDBY_REQUEST:
+        case GET_ANALYSISEXPENDTYPE_REQUEST:
+        case GET_ANALYSISSOURCE_REQUEST:
+            return{
+                ...state,
+                isIndvidualLoading:true
             }
         case GET_ANALYSIS_SUCCESS:
             return {
@@ -41,25 +47,25 @@ export const analysisReducer = (state = initialState, action:any) => {
         case GET_ANALYSISEARNBY_SUCCESS:
             return {
                 ...state,
-                isLoading:false,
+                isIndvidualLoading:false,
                 analysisearnBy:action.payload
             }
         case GET_ANALYSISEXPENDBY_SUCCESS:
             return{
                 ...state,
-                isLoading:false,
+                isIndvidualLoading:false,
                 analysisexpendBy:action.payload
             }
         case GET_ANALYSISSOURCE_SUCCESS:
             return{
                 ...state,
-                isLoading:false,
+                isIndvidualLoading:false,
                 analysissource:action.payload
             }
         case GET_ANALYSISEXPENDTYPE_SUCCESS:
             return{
                 ...state,
-                isLoading:false,
+                isIndvidualLoading:false,
                 analysisexpendType:action.payload
             }
         case GET_ANALYSIS_FAIL:
@@ -69,6 +75,7 @@ export const analysisReducer = (state = initialState, action:any) => {
         case GET_ANALYSISEXPENDTYPE_FAIL:
             return {
                 isLoading: false,
+                isIndvidualLoading:false,
                 analysisData: null,
                 analysisearnBy:null,
                 analysisexpendBy:null,

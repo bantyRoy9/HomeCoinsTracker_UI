@@ -20,8 +20,6 @@ const Analysis = () => {
 
   const handleTabChange = useCallback((expendType) => setActiveTab(expendType), []);
   const modalVisibleHandler = useCallback((type, id) => {
-    console.log(typeof(type),"tytpe");
-    
     typeof(type) == 'string' && setAnalysisType({ type, id });
     setModalVisible(prev => !prev);
   }, []);
@@ -71,7 +69,7 @@ const Analysis = () => {
   );
   const renderItemBySources = ({item, index}) => (
     <View key={index} style={[styles.summaryCard,{backgroundColor:colors.card}]}>
-      <Pressable onPress={()=>modalVisibleHandler('source',item._id.id)}>
+      <Pressable onPress={()=>modalVisibleHandler(activeTab=='earn'?'source':'expendType',item._id.id)}>
         <CustomText title={item._id[activeTab=='earn'?'sourceName':'expendName']}/>
         <CustomText title={`₹${item.totalAmount}`}/>
       </Pressable>
