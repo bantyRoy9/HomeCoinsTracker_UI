@@ -15,7 +15,7 @@ const dataResponse = {
     graphdata:[]
 }
 const initialState = {
-    isIndvidualLoading:false,
+    isIndvidualLoading:true,
     isLoading:false,
     analysisData:dataResponse,
     analysisearnBy:dataResponse,

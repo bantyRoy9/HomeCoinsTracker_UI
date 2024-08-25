@@ -2,8 +2,9 @@ import React,{memo} from 'react';
 import {Modal, StyleSheet, View, TouchableWithoutFeedback, Text, Pressable} from 'react-native';
 import { FontAwesome5 } from '../Utils';
 import { useTheme }  from 'react-native-paper';
-const Modals = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,onDelete,modalType='Primary'}) => {
-  const { colors } = useTheme();
+import { IModals } from './Types';
+const Modals = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,onDelete,modalType='Primary',style}:IModals) => {
+  const { colors } = useTheme() as any;
   
   return (
     <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={modalVisibleHandler}>
@@ -11,7 +12,7 @@ const Modals = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true
         <View style={[styles.overlay,{backgroundColor:colors.modalOverlayColor}]}>
           <TouchableWithoutFeedback>
             <> 
-            {Component && <View style={[styles.centeredView,bottomView && styles["bottomView"],{backgroundColor:colors[`modal${modalType}Background`]},styles[modalType]]}>
+            {Component && <View style={[styles.centeredView,bottomView && styles["bottomView"],{backgroundColor:colors[`modal${modalType}Background`],...style},styles[modalType]]}>
               <View style={{justifyContent:'center',display:'flex',alignItems:'center',borderRadius:30}}>
                 {onDelete ? 
                   <Pressable onPress={onDelete} style={{backgroundColor:"red",alignItems:'center',gap:10,flexDirection:'row',paddingHorizontal:25,paddingVertical:15,position:'absolute',top:-60,borderRadius:50}}>
@@ -32,12 +33,9 @@ const styles = StyleSheet.create({
   Primary:{
 
   },
-  Secondary:{
+  Secondary : {
     borderColor:'red',
     borderWidth:1,
-
-  },
-  Secondary : {
     borderRadius: 10,
     padding: 16,
     margin: 16,

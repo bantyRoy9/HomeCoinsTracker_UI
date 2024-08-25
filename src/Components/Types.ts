@@ -20,4 +20,13 @@ export interface ICustomText {
   style?: any;
   viewStyle?:any
 };
-
+export interface IModals {
+  Component:JSX.Element;
+  modalVisible:boolean;
+  type:string;
+  modalVisibleHandler:()=>void;
+  bottomView?:boolean;
+  onDelete?:any;
+  modalType?:'Primary'|'Secondary';
+  style?:any
+}

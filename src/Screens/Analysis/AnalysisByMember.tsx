@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, ActivityIndicator, ScrollView, Image } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 import { CustomText } from '../../Components';
 import { UseAppSelector } from '../../Redux/Store';
@@ -16,8 +16,24 @@ const AnalysisByMember: FC<any> = ({ analysisType, type }) => {
 
   },[])
   console.log(data,isIndvidualLoading,analysisType,type);
-  
-  return (<></>
+  const earnDetailsbind = (earnDetails:Earn)=>{
+    return(
+      <ScrollView>
+        <View>
+          <View>
+            {/* <Image source={'/'}/> */}
+          </View>
+        <CustomText title={earnDetails.earnBySources[0]._id.sourceName}/>
+        <CustomText title={earnDetails.earnBySources[0]._id.sourceInv}/>
+        </View>
+      </ScrollView>
+    )
+  };
+  const expendDetailsBind = (expendDetais:Expend) =>{
+    return <></>
+  }
+  return (
+    isIndvidualLoading ? <ActivityIndicator /> : type == "earn" ? earnDetailsbind(data) : expendDetailsBind(data)
     // analysisData && <View>
     //   <View>
     //     <CustomText title={analysisData.heading.name ?? ""} />
