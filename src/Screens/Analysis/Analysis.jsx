@@ -147,7 +147,7 @@ const Analysis = () => {
           <FlatList data={analysisData[activeTab][`recent${activeTab}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5}/>
         </View>
         </ScrollView>
-        <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type}/>} style={{height:200}} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
+        <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type}/>} style={{height:Dimensions.get('screen').height-150}} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
         </>
        : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }
