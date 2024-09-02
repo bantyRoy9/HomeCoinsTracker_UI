@@ -3,52 +3,47 @@ import React, { FC, useEffect, useState } from 'react'
 import { CustomText } from '../../Components';
 import { UseAppSelector } from '../../Redux/Store';
 import { Earn, Expend, IAnalysisData, Id, Id2 } from '../../Redux/type';
+import { useSelector } from 'react-redux';
 interface analysisDataType {
   heading:{name:string,photo:string,inv?:string,},
   expendType:any,
 
 }
 const AnalysisByMember: FC<any> = ({ analysisType, type }) => {
-  const { analysis,analysis:{isIndvidualLoading} } = UseAppSelector(state => state);
+  const { analysis,analysis:{isIndvidualLoading} } = useSelector((state:any) => state);
   const [analysisData,setAnalysisData] = useState<analysisDataType>();
-  let data:Earn | Expend = analysis[`analysis${analysisType}`][type];
+  const [data,setData] = useState<Earn | Expend>();
   useEffect(()=>{
-
-  },[])
-  console.log(data,isIndvidualLoading,analysisType,type);
+    console.log(`analysis${analysisType}`,type);
+    
+    let data:Earn | Expend = analysis[`analysis${analysisType}`][type];
+    setData(data);
+  },[analysisType,type,isIndvidualLoading]);
   const earnDetailsbind = (earnDetails:Earn)=>{
     return(
-      <ScrollView>
+      earnDetails.earnBySources.length>0 && <ScrollView>
         <View>
           <View>
             {/* <Image source={'/'}/> */}
           </View>
-        <CustomText title={earnDetails.earnBySources[0]._id.sourceName}/>
-        <CustomText title={earnDetails.earnBySources[0]._id.sourceInv}/>
+        <CustomText title={earnDetails?.earnBySources[0]?._id?.sourceName}/>
+        <CustomText title={earnDetails?.earnBySources[0]?._id?.sourceInv}/>
         </View>
       </ScrollView>
     )
   };
   const expendDetailsBind = (expendDetais:Expend) =>{
-    return <></>
+    // console.log(expendDetais);
+    
+    return (expendDetais && expendDetais.expendByTypes && expendDetais.expendByTypes.length>0) && <ScrollView>
+    <View>
+      <CustomText title={expendDetais?.expendByTypes[0]?._id?.expendName}/>
+      <CustomText title={expendDetais?.expendByTypes[0]?._id?.expendType}/>
+      <CustomText title={expendDetais?.expendByTypes[0]?.totalAmount}/>
+    </View>
+  </ScrollView>
   }
-  return (
-    isIndvidualLoading ? <ActivityIndicator /> : type == "earn" ? earnDetailsbind(data) : expendDetailsBind(data)
-    // analysisData && <View>
-    //   <View>
-    //     <CustomText title={analysisData.heading.name ?? ""} />
-    //   </View>
-    //   <View>
-    //     <CustomText title={analysisData.earnBySources[0]?._id?.sourceInv ?? ""} />
-    //   </View>
-    //   <View>
-    //     <CustomText title={analysisData.earnBySources[0]?._id?.sourceType ?? ""} />
-    //   </View>
-    //   <View>
-    //     <CustomText title={analysisData.totalearn ?? ""} />
-    //   </View>
-    // </View>
-  )
+  return (isIndvidualLoading || (data && !Object.keys(data as any).length)) ? <ActivityIndicator /> : type == "earn" ? earnDetailsbind(data as Earn) : expendDetailsBind(data as Expend);
 }
 
 export default AnalysisByMember

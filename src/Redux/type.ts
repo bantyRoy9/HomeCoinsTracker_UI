@@ -54,9 +54,19 @@ export interface IAnalysisData {
   
   export interface Expend {
     totalexpend: number
-    expendByTypes: any[]
+    expendByTypes: IexpendByTypes[]
     expendByMembers: any[]
     recentexpend: any[]
+  }
+  export interface IexpendByTypes {
+    _id: IexpendByTypesId
+    totalAmount: number
+  }
+  
+  export interface IexpendByTypesId {
+    id: string
+    expendType: string
+    expendName: string
   }
   
   export interface Graphdaum {

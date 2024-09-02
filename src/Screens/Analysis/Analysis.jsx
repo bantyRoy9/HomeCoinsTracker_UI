@@ -10,7 +10,7 @@ import AnalysisByMember from './AnalysisByMember';
 const Analysis = () => {
   const dispatch = useDispatch(),{colors} = useTheme();
   const tabs = [{tab:"earn",active:true,details:{}},{tab:"expend",active:false,details:{}}];
-  const {analysisData,analysisSource,analysisEarnBy,analysisExpendBy,analysisExpendType, isLoading} = useSelector(state => state.analysis);
+  const {analysis:{analysisData, isLoading},analysis} = useSelector(state => state);
   const [dateRange, setDateRange] = useState(AnalysisNavList.filter(el => el.active == true)[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
@@ -33,7 +33,7 @@ const Analysis = () => {
     if (dateRange) {
       dispatch(getAnalysisData(dateRange.dateRange, false, analysisType.type, analysisType.id));
     }
-  }, [dateRange, analysisType.id]);
+  }, [dispatch,dateRange, analysisType.id]);
 
   // useEffect(() => {
   //   const intervalId = setInterval(scrollToNext, 5000);
@@ -68,12 +68,12 @@ const Analysis = () => {
     </Pressable>
   );
   const renderItemBySources = ({item, index}) => (
-    <View key={index} style={[styles.summaryCard,{backgroundColor:colors.card}]}>
       <Pressable onPress={()=>modalVisibleHandler(activeTab=='earn'?'source':'expendType',item._id.id)}>
+    <View key={index} style={[styles.summaryCard,{backgroundColor:colors.card}]}>
         <CustomText title={item._id[activeTab=='earn'?'sourceName':'expendName']}/>
         <CustomText title={`₹${item.totalAmount}`}/>
-      </Pressable>
     </View>
+      </Pressable>
   );
 
   const renderChartList = ({item, index}) => {
@@ -119,6 +119,7 @@ const Analysis = () => {
         </Pressable>
     </View>
 );
+console.log(analysis,'parent');
 
   return (
     <>
@@ -147,10 +148,10 @@ const Analysis = () => {
           <FlatList data={analysisData[activeTab][`recent${activeTab}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5}/>
         </View>
         </ScrollView>
-        <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type}/>} style={{height:Dimensions.get('screen').height-150}} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
         </>
        : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }
+      <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type} analysis={analysis}/>} style={{height:Dimensions.get('screen').height-150}} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
     </>
   );
 };
