@@ -1,8 +1,9 @@
 import { GET_ANALYSIS_FAIL, GET_ANALYSIS_REQUEST, GET_ANALYSIS_SUCCESS, GET_ANALYSISEARNBY_FAIL, GET_ANALYSISEARNBY_REQUEST, GET_ANALYSISEARNBY_SUCCESS, GET_ANALYSISEXPENDBY_FAIL, GET_ANALYSISEXPENDBY_REQUEST, GET_ANALYSISEXPENDBY_SUCCESS, GET_ANALYSISEXPENDTYPE_FAIL, GET_ANALYSISEXPENDTYPE_REQUEST, GET_ANALYSISEXPENDTYPE_SUCCESS, GET_ANALYSISSOURCE_FAIL, GET_ANALYSISSOURCE_REQUEST, GET_ANALYSISSOURCE_SUCCESS, } from "../constants"
-const dataResponse = {
+import { IAnalysisData, IinitalAnalysisState } from "../type"
+const dataResponse:IAnalysisData = {
     earn:{
         totalearn:0,
-        earnBySource:[],
+        earnBySources:[],
         earnByMembers:[],
         recentearn:[]
     },
@@ -14,7 +15,7 @@ const dataResponse = {
     },
     graphdata:[]
 }
-const initialState = {
+const initialState:IinitalAnalysisState = {
     isIndvidualLoading:true,
     isLoading:false,
     analysisData:dataResponse,
@@ -23,7 +24,7 @@ const initialState = {
     analysissource:dataResponse,
     analysisexpendType:dataResponse
 }
-export const analysisReducer = (state = initialState, action:any) => {
+export const analysisReducer = (state:IinitalAnalysisState = initialState, action:any):IinitalAnalysisState => {
     switch (action.type) {
         case GET_ANALYSIS_REQUEST:
             return {

@@ -1,6 +1,7 @@
 import moment from "moment";
+import {IGlobleTabs} from "./Conts";
 const date = new Date();
-export const topHomeNavList = [{
+export const topHomeNavList:IGlobleTabs[] = [{
     label: "Daily",
     dateRange: `${moment().format('YYYY-MM-DD')}_${moment().format('YYYY-MM-DD')}`,
     active: true

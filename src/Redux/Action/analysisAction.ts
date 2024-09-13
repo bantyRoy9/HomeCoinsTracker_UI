@@ -7,7 +7,7 @@ export const getAnalysisData = (daterange:string,isUserType:boolean,type:'source
         console.log(`GET_ANALYSIS${stringTransform(type,'U')}_REQUEST`,`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? `&${type}=${id}`:''}`);
         const {data} = await axios.get(`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? `&${type}=${id}`:''}`, await getAxiosHeader());
         if(data.status){
-            console.log(`GET_ANALYSIS${stringTransform(type,'U')}_SUCCESS`,data.data);
+            // console.log(`GET_ANALYSIS${stringTransform(type,'U')}_SUCCESS`,data.data);
             dispatch({type:`GET_ANALYSIS${stringTransform(type,'U')}_SUCCESS`,payload:data.data});
         }
     }catch(err:any){

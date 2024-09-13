@@ -4,3 +4,8 @@ export type bindAnalysisDetailType={
     analysisPhoto?:string;
     analysisInv?:number
 }
+export interface IGlobleTabs{
+    label: string
+    dateRange: string
+    active: boolean
+  }

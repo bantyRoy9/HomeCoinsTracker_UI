@@ -18,4 +18,4 @@ export const store = createStore(reducers,composeWithDevTools(applyMiddleware(th
 type AppDispacth = typeof store.dispatch;
 type RoofState = ReturnType<typeof store.getState>;
 export const useAppDispatch = () => useDispatch<AppDispacth>();
-export const UseAppSelector: TypedUseSelectorHook<RoofState> = useSelector;
+export const useAppSelector: TypedUseSelectorHook<RoofState> = useSelector;

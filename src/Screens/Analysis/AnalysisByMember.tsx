@@ -1,66 +1,62 @@
-import { View, Text, ActivityIndicator, ScrollView, Image } from 'react-native'
-import React, { FC, useEffect, useState } from 'react'
-import { CustomText } from '../../Components';
-import { UseAppSelector } from '../../Redux/Store';
-import { Earn, Expend, IAnalysisData, Id, Id2 } from '../../Redux/type';
-import { useSelector } from 'react-redux';
+import React, { FC, memo } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { bindAnalysisDetailType } from '../../Utils/Conts';
+import { useSelector } from 'react-redux';
+import { CustomText } from '../../Components';
+import { Earn, Expend } from '../../Redux/type';
 import { defaultStyle } from '../../Utils';
-interface analysisDataType {
-  heading:{name:string,photo:string,inv?:string,},
-  expendType:any,
-
-}
 const AnalysisByMember: FC<any> = ({ analysisType, type }) => {
   const { colors } = useTheme() as any;
-  const { analysis,analysis:{isIndvidualLoading} } = useSelector((state:any) => state);
-  const [data,setData] = useState<Earn | Expend>();
-  const backgroundStyle = {backgroundColor: colors.background,color: colors.text};
-
-  useEffect(()=>{
-    let data:Earn | Expend = analysis[`analysis${analysisType}`][type];
-    setData(data);
-  },[analysisType,type,isIndvidualLoading]);
-  const BindAnalysisActivityDetails = () =>{
-    return<></>
-  }
-  const BindAnalysisSubDetails = () =>{
+  const { analysis, analysis: { isIndvidualLoading } } = useSelector((state: any) => state);
+  const backgroundStyle = { backgroundColor: colors.background, color: colors.text };
+  let data: Earn | Expend = analysis[`analysis${analysisType}`][type];
+  const BindAnalysisActivityDetails = () => {
     return <></>
   }
-  const BindAnalysisDetails=(analysisName:string,analysisType:string,analysisPhoto?:string,analysisInv?:number)=>{
-    const analysisDetails = <View>
-    <CustomText title={analysisName}/>
-    <CustomText title={analysisType}/>
-    <CustomText title={analysisInv!}/>
-  </View>
-    return analysisDetails
+  const BindAnalysisSubDetails = () => {
+    return <></>
   }
-  const earnDetailsbind = (earnDetails:Earn)=>{
-    return(
-      earnDetails.earnBySources.length>0 && <ScrollView>
-        <View>
-          <View>
-            {/* <Image source={'/'}/> */}
-          </View>
-        <CustomText title={earnDetails?.earnBySources[0]?._id?.sourceName}/>
-        <CustomText title={earnDetails?.earnBySources[0]?._id?.sourceInv}/>
-        </View>
-      </ScrollView>
-    )
+  const BindAnalysisDetails = (analysisName: string, analysisType: string, analysisInv?: number,analysisPhoto?: string) => {
+    const analysisDetails = <View>
+      <CustomText title={analysisName} />
+      <CustomText title={analysisType} />
+      <CustomText title={analysisInv!} />
+    </View>
+    return analysisDetails
   };
-  const expendDetailsBind = (expendDetais:Expend) =>{
-    let analysisDetails=expendDetais.expendByTypes[0]?._id??{};
-    const analysisDetailsEle = BindAnalysisDetails(analysisDetails?.expendName,analysisDetails?.expendType,)
+
+  const earnDetailsbind = (earnDetails: Earn) => {
+    if (!earnDetails) return;
+    console.log(earnDetails, 'earnDetails');
+    // const topDetails = BindAnalysisDetails();
+    const earnDetailsLayout = <ScrollView>
+        <View>
+          {BindAnalysisDetails(earnDetails?.earnBySources[0]?._id?.sourceName,earnDetails?.earnBySources[0]?._id?.sourceType,earnDetails?.earnBySources[0]?._id?.sourceInv)}
+        </View>
+        <View>
+          {BindAnalysisSubDetails()}
+        </View>
+        <View>
+          {BindAnalysisActivityDetails()}
+        </View>
+      </ScrollView>;
+
+    return earnDetailsLayout;
+  };
+  const expendDetailsBind = (expendDetais: Expend) => {
+    if (!expendDetais) return;
+    console.log(expendDetais, 'expendDetails');
+    let analysisDetails = expendDetais.expendByTypes[0]?._id ?? {};
+    const analysisDetailsEle = BindAnalysisDetails(analysisDetails?.expendName, analysisDetails?.expendType,)
     return <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
       <View style={defaultStyle.screenContainer}>
         <View>
           {analysisDetailsEle}
         </View>
       </View>
-  </ScrollView>
+    </ScrollView>
   }
   return (isIndvidualLoading || (data && !Object.keys(data as any).length)) ? <ActivityIndicator /> : type == "earn" ? earnDetailsbind(data as Earn) : expendDetailsBind(data as Expend);
 }
 
-export default AnalysisByMember
+export default memo(AnalysisByMember)
