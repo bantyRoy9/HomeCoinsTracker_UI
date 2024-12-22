@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 interface ICustomHeaderTitle{
     title:string;
-    type:string;
+    type?:string;
     colors:any;
 }
 const CustomHeaderTitle: React.FC<ICustomHeaderTitle> = ({title,type,colors}) => {

@@ -1,13 +1,13 @@
 import React,{memo} from 'react';
-import {Modal, StyleSheet, View, TouchableWithoutFeedback, Text, Pressable} from 'react-native';
+import {Modal as ModalComponent, StyleSheet, View, TouchableWithoutFeedback, Text, Pressable} from 'react-native';
 import { FontAwesome5 } from '../Utils';
 import { useTheme }  from 'react-native-paper';
 import { IModals } from './Types';
-const Modals = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,onDelete,modalType='Primary',style}:IModals) => {
+const Modal = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,onDelete,modalType='Primary',style}:IModals) => {
   const { colors } = useTheme() as any;
   
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={modalVisibleHandler}>
+    <ModalComponent animationType="slide" transparent={true} visible={modalVisible} onRequestClose={modalVisibleHandler}>
       <TouchableWithoutFeedback onPress={modalVisibleHandler}>
         <View style={[styles.overlay,{backgroundColor:colors.modalOverlayColor}]}>
           <TouchableWithoutFeedback>
@@ -25,7 +25,7 @@ const Modals = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
-    </Modal>
+    </ModalComponent>
   );
 };
 
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default memo(Modals);
+export default memo(Modal);

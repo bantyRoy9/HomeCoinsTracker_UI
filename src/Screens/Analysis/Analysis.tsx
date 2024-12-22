@@ -1,40 +1,41 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
 import { Chart, CustomHeaderTitle, CustomNavigationTab, CustomText } from '../../Components';
 import Modal from '../../Components/Modal';
 import { getAnalysisData } from '../../Redux/Action/analysisAction';
-import { AnalysisNavList, dateFormat, defaultStyle, stringTransform } from '../../Utils';
-import AnalysisByMember from './AnalysisByMember';
 import { useAppDispatch, useAppSelector } from '../../Redux/Store';
-import { Itabs, Tanalysis } from './type';
+import { IAnalysisData } from '../../Redux/type';
+import { AnalysisNavList, dateFormat, defaultStyle, stringTransform } from '../../Utils';
 import { IGlobleTabs } from '../../Utils/Conts';
+import AnalysisByMember from './AnalysisByMember';
+import { Itabs, Tanalysis } from './type';
 const Analysis:FC<any> = () => {
-  const dispatch = useAppDispatch(), { colors } = useTheme();
+  const dispatch = useAppDispatch(), { colors } = useTheme() as any;
   const tabs = [{ tab: "earn", active: true, details: {} }, { tab: "expend", active: false, details: {} }] as Itabs[];
   const { analysis: { analysisData, isLoading }, analysis } = useAppSelector(state => state);
   const [dateRange, setDateRange] = useState<IGlobleTabs>(AnalysisNavList.filter(el => el.active == true)[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList<any>>(null);
   const [activeTab, setActiveTab] = useState<Itabs["tab"]>(tabs[0].tab);
   const [analysisType, setAnalysisType] = useState<Tanalysis>();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleTabChange = useCallback((expendType:string) => setActiveTab(expendType), []);
-  const modalVisibleHandler = useCallback((type:Tanalysis['type'], id:string) => {
-    typeof (type) == 'string' && setAnalysisType({ type, id });
+  const modalVisibleHandler = useCallback((type?:Tanalysis['type'], id?:string) => {
+    typeof (type) == 'string' && id && setAnalysisType({ type, id });
     setModalVisible(prev => !prev);
   }, []);
 
   const navPressHandle = useCallback((navPress:IGlobleTabs) => {
     AnalysisNavList.forEach(el => el.active = el.label === navPress.label);
+    setAnalysisType({type:''})
     setDateRange(navPress);
   }, []);
 
   useEffect(() => {
-    if (dateRange && analysisType) {
-      dispatch(getAnalysisData(dateRange.dateRange, false, analysisType.type, analysisType.id));
+    if (dateRange) {
+      dispatch(getAnalysisData(dateRange.dateRange, false, analysisType!?.type||'', analysisType!?.id));
     }
   }, [dispatch, dateRange, analysisType?.id]);
 
@@ -51,7 +52,7 @@ const Analysis:FC<any> = () => {
     }
   };
 
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+  const onViewableItemsChanged = useRef(({ viewableItems }:{viewableItems:any}) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
     }
@@ -59,7 +60,7 @@ const Analysis:FC<any> = () => {
 
 
 
-  const renderItemByUser = ({ item, index }) => (
+  const renderItemByUser = ({ item, index }:{item:any,index:number}) => (
     <Pressable key={index} style={[styles.summaryCard, { backgroundColor: colors.card }]} onPress={() => modalVisibleHandler(activeTab == 'earn' ? 'earnBy' : 'expendBy', item._id.id)}>
       <View style={styles.activityProfileList}>
         <Image source={require('../../../Assets/profiles/default.png')} style={{ width: 40, height: 40, borderRadius: 8 }} />
@@ -70,7 +71,7 @@ const Analysis:FC<any> = () => {
       </View>
     </Pressable>
   );
-  const renderItemBySources = ({ item, index }) => (
+  const renderItemBySources = ({ item, index }:{item:any,index:number}) => (
     <Pressable onPress={() => modalVisibleHandler(activeTab == 'earn' ? 'source' : 'expendType', item._id.id)}>
       <View key={index} style={[styles.summaryCard, { backgroundColor: colors.card }]}>
         <CustomText title={item._id[activeTab == 'earn' ? 'sourceName' : 'expendName']} />
@@ -79,11 +80,10 @@ const Analysis:FC<any> = () => {
     </Pressable>
   );
 
-  const renderChartList = ({ item, index }) => {
+  const renderChartList = ({ item, index }:{item:any,index:number}) => {
     let accessor = 'earn';
     if (index > 1) accessor = 'expend';
     return (
-      <>
         <View style={{ ...styles.chartContiner }}>
           <View style={{ justifyContent: 'center', position: 'relative' }}>
             <Chart graphData={item} chartType="barChart" accessor={accessor} />
@@ -93,12 +93,11 @@ const Analysis:FC<any> = () => {
             </View>
           </View>
         </View>
-      </>
     );
   };
-  const renderRecentItem = ({ item, index }) => (
+  const renderRecentItem = ({ item, index }:{item:any,index:number}) => (
     <View key={index} style={defaultStyle.screenContainer}>
-      <Pressable style={{ ...styles.activityLists, borderBottomColor: colors.border, borderBottomWidth: analysisData.earn.recentearn.length - 1 > index ? 1 : 0 }}>
+      <Pressable style={{ ...styles.activityLists, borderBottomColor: colors.border, borderBottomWidth: analysisData!.earn.recentearn.length - 1 > index ? 1 : 0 }}>
         <View style={styles.activityList}>
           <View style={styles.activityLeftSec}>
             <View style={styles.activityProfileList}>
@@ -124,17 +123,17 @@ const Analysis:FC<any> = () => {
   );
 
   return (
-    <>
+    <View>
       <View style={{ ...styles.navigationContainer, backgroundColor: colors.HeaderBg }}>
         {AnalysisNavList.map((ele, idx) => (ele.label !== "Daily" && <Pressable onPress={() => navPressHandle(ele)} key={`${ele.label}_${idx}`} style={{ flex: 1 }}>
           <CustomText title={ele.label} style={ele.active ? { ...styles.navText, color: colors.HeaderText, borderBottomColor: colors.notification, borderBottomWidth: 2 } : { ...styles.navText, color: colors.HeaderText }} />
         </Pressable>))}
       </View>
-      {!isLoading ? <>
+      {!isLoading?<View>
         <ScrollView>
           {/* Chart container */}
           <View>
-            <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData.graphdata} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }} />
+            <FlatList horizontal ref={flatListRef} pagingEnabled data={analysisData!.graphdata} keyExtractor={(item, indx) => indx.toString()} renderItem={renderChartList} onEndReachedThreshold={0.5} showsHorizontalScrollIndicator={false} decelerationRate="fast" onViewableItemsChanged={onViewableItemsChanged} viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }} />
             <View style={styles.paginationContainer}>
               {analysisData?.graphdata?.map((_, idx) => (<View key={idx} style={[styles.dot, currentIndex === idx && styles.activeDot]} />))}
             </View>
@@ -143,18 +142,18 @@ const Analysis:FC<any> = () => {
           <View style={defaultStyle.screenContainer}>
             <CustomNavigationTab tabs={tabs} activeTab={activeTab} tabHandler={handleTabChange} />
             <CustomHeaderTitle colors={colors} title={activeTab == 'earn' ? 'Sources' : 'Expend Types'} />
-            <FlatList data={analysisData[activeTab][`${activeTab}${activeTab == 'earn' ? 'BySources' : 'ByTypes'}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemBySources} onEndReachedThreshold={0.5} horizontal showsHorizontalScrollIndicator={false} />
+            <FlatList data={analysisData![activeTab as keyof IAnalysisData][`${activeTab}${activeTab == 'earn' ? 'BySources' : 'ByTypes'}` as keyof object]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemBySources} onEndReachedThreshold={0.5} horizontal showsHorizontalScrollIndicator={false} />
             <CustomHeaderTitle colors={colors} title='Memebers' />
-            <FlatList horizontal showsHorizontalScrollIndicator={false} data={analysisData[activeTab][`${activeTab}ByMembers`]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemByUser} onEndReachedThreshold={0.5} />
+            <FlatList horizontal showsHorizontalScrollIndicator={false} data={analysisData![activeTab as keyof IAnalysisData][`${activeTab}ByMembers` as keyof object]} keyExtractor={(item, index) => index.toString()} renderItem={renderItemByUser} onEndReachedThreshold={0.5} />
             <CustomHeaderTitle colors={colors} title='Recent Summary' />
-            <FlatList data={analysisData[activeTab][`recent${activeTab}`]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5} />
+            <FlatList data={analysisData![activeTab as keyof IAnalysisData][`recent${activeTab}` as keyof object]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5} />
           </View>
         </ScrollView>
-        <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type} analysis={analysis} />} style={{ height: Dimensions.get('screen').height - 150 }} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />
-      </>
+        {analysisType && <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type} analysis={analysis} />} style={{ height: Dimensions.get('screen').height - 150 }} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />}
+      </View>
         : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }
-    </>
+    </View>
   );
 };
 

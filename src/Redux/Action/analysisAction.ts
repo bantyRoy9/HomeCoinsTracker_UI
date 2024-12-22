@@ -1,7 +1,7 @@
 import axios from "axios"
 import { accountControllerURL, getAxiosHeader, showAlert, stringTransform, userControllerURL } from "../../Utils"
 
-export const getAnalysisData = (daterange:string,isUserType:boolean,type:'source' | 'earnBy' | 'expendBy' | 'expendType',id?:string) =>async(dispatch:any) =>{
+export const getAnalysisData = (daterange:string,isUserType:boolean,type:'source' | 'earnBy' | 'expendBy' | 'expendType' | '',id?:string) =>async(dispatch:any) =>{
     try{
         dispatch({type:`GET_ANALYSIS${stringTransform(type,'U')}_REQUEST`});
         console.log(`GET_ANALYSIS${stringTransform(type,'U')}_REQUEST`,`${isUserType?userControllerURL:accountControllerURL}/getAnalysisData?dateRange=${daterange}${type? `&${type}=${id}`:''}`);

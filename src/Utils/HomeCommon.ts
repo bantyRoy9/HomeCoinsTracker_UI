@@ -1,7 +1,6 @@
-export const stringTransform = (str,transform) =>{
+export const stringTransform = (str:string,transform:"L"|"U"|"C") =>{
     let formatedStr = str;
     if(str && transform){
-        transform = transform.toUpperCase();
         switch(transform){
             case "L" :
                 formatedStr = str.toLowerCase();

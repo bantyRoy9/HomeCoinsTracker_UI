@@ -23,7 +23,7 @@ export interface ICustomText {
 export interface IModals {
   Component:JSX.Element;
   modalVisible:boolean;
-  type:string;
+  type?:string;
   modalVisibleHandler:()=>void;
   bottomView?:boolean;
   onDelete?:any;
