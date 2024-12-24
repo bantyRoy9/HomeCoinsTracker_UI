@@ -7,6 +7,7 @@ import { getActivity } from '../../Redux/Action/activityAction';
 import { defaultStyle, showAlert, stringTransform } from '../../Utils';
 import { dateFormat, filterKeyIncludeArr, getElementByIndex } from '../../Utils/CommonAuthFunction';
 import { viewHeight } from '../../Utils/defaultStyle';
+import ActivityItem from './ActivityItem';
 
 const Activity = () => {
     const dispatch = useDispatch();
@@ -48,42 +49,55 @@ console.log(isLoading);
     };
 
     const renderItem = ({ item, index }) => (
-        <View key={index} style={defaultStyle.screenContainer}>
-            <Pressable style={{ ...styles.activityLists, borderBottomColor: colors.border, borderBottomWidth: activity.length - 1 > index ? 1 : 0 }}>
-                <View style={styles.activityList}>
-                    <View style={styles.activityLeftSec}>
-                        <View style={styles.activityProfileList}>
-                            <Image source={require('../../../Assets/profiles/default.png')}
-                                style={{ width: 40, height: 40, borderRadius: 8 }}
-                            />
-                        </View>
-                        <View>
-                            {item.Url === "/earn" && <>
-                                <View><Text style={{ color: colors.text }}>Earn By</Text></View>
-                                <View><Text style={{ color: colors.text }}>{stringTransform(getElementByIndex(filterKeyIncludeArr(source, "_id", item.addEarn?.source), 0, "sourceName"), 'c')}</Text></View>
-                            </>}
-                            {item.Url === "/expend" && <>
-                                <View><Text style={{ color: colors.text }}>Expend to</Text></View>
-                                <View><Text style={{ color: colors.text }}>{item.addExpend?.description ?? 'NA'}</Text></View>
-                            </>}
-                        </View>
-                    </View>
-                    <View style={styles.activityRightSec}>
-                        <Text style={{ color: item.Url === "/expend" ? colors.error : item.methodType === "PATCH" ? colors.warning : colors.success }}>
-                            {`${item.Url === "/expend" ? '- ₹' + (item.addExpend?.amount ?? "NA") : '+ ₹' + (item.addEarn?.amount ?? "NA")} `}
-                        </Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View>
-                        <Text style={{ color: colors.text }}>{item.updatedDate ? dateFormat("DD MMM YY hh:mm a", item.updatedDate) : item.date ? dateFormat("DD MMM YY hh:mm a", item.date) : 'NA'}</Text>
-                    </View>
-                    <View>
-                        <Text style={{ color: colors.text }}>{`${item.methodType === "PATCH" ? "Updated" : "Added"} By ${stringTransform(item.user?.name, 'C')} `}</Text>
-                    </View>
-                </View>
-            </Pressable>
-        </View>
+        // <View key={index} style={defaultStyle.screenContainer}>
+        //     <Pressable style={{ ...styles.activityLists, borderBottomColor: colors.border, borderBottomWidth: activity.length - 1 > index ? 1 : 0 }}>
+        //         <View style={styles.activityList}>
+        //             <View style={styles.activityLeftSec}>
+        //                 <View style={styles.activityProfileList}>
+        //                     <Image source={require('../../../Assets/profiles/default.png')}
+        //                         style={{ width: 40, height: 40, borderRadius: 8 }}
+        //                     />
+        //                 </View>
+        //                 <View>
+        //                     {item.Url === "/earn" && <>
+        //                         <View><Text style={{ color: colors.text }}>Earn By</Text></View>
+        //                         <View><Text style={{ color: colors.text }}>{stringTransform(getElementByIndex(filterKeyIncludeArr(source, "_id", item.addEarn?.source), 0, "sourceName"), 'c')}</Text></View>
+        //                     </>}
+        //                     {item.Url === "/expend" && <>
+        //                         <View><Text style={{ color: colors.text }}>Expend to</Text></View>
+        //                         <View><Text style={{ color: colors.text }}>{item.addExpend?.description ?? 'NA'}</Text></View>
+        //                     </>}
+        //                 </View>
+        //             </View>
+        //             <View style={styles.activityRightSec}>
+        //                 <Text style={{ color: item.Url === "/expend" ? colors.error : item.methodType === "PATCH" ? colors.warning : colors.success }}>
+        //                     {`${item.Url === "/expend" ? '- ₹' + (item.addExpend?.amount ?? "NA") : '+ ₹' + (item.addEarn?.amount ?? "NA")} `}
+        //                 </Text>
+        //             </View>
+        //         </View>
+        //         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        //             <View>
+        //                 <Text style={{ color: colors.text }}>{item.updatedDate ? dateFormat("DD MMM YY hh:mm a", item.updatedDate) : item.date ? dateFormat("DD MMM YY hh:mm a", item.date) : 'NA'}</Text>
+        //             </View>
+        //             <View>
+        //                 <Text style={{ color: colors.text }}>{`${item.methodType === "PATCH" ? "Updated" : "Added"} By ${stringTransform(item.user?.name, 'C')} `}</Text>
+        //             </View>
+        //         </View>
+        //     </Pressable>
+        // </View>
+        <ActivityItem
+      item={item}
+      index={index}
+      length={activity.length}
+      colors={colors}
+      styles={styles}
+      onPress={() => console.log("Activity pressed:", item)}
+      source={source}
+      stringTransform={stringTransform}
+      dateFormat={dateFormat}
+      filterKeyIncludeArr={filterKeyIncludeArr}
+      getElementByIndex={getElementByIndex}
+    />
     );
     const onLayout = (event) =>{
         const { height } = event.nativeEvent.layout;

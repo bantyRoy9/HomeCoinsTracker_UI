@@ -1,5 +1,5 @@
 export interface Itabs{
-    tab: string;
+    tab: 'earn' | 'expend';
     active: boolean;
     details: any
 }
