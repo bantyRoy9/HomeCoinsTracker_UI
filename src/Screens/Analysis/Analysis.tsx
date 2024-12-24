@@ -21,7 +21,7 @@ const Analysis:FC<any> = () => {
   const [analysisType, setAnalysisType] = useState<Tanalysis>();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleTabChange = useCallback((expendType:string) => setActiveTab(expendType), []);
+  const handleTabChange = useCallback((expendType:Itabs['tab']) => setActiveTab(expendType), []);
   const modalVisibleHandler = useCallback((type?:Tanalysis['type'], id?:string) => {
     typeof (type) == 'string' && id && setAnalysisType({ type, id });
     setModalVisible(prev => !prev);
@@ -149,7 +149,7 @@ const Analysis:FC<any> = () => {
             <FlatList data={analysisData![activeTab as keyof IAnalysisData][`recent${activeTab}` as keyof object]} keyExtractor={(item, index) => index.toString()} renderItem={renderRecentItem} onEndReachedThreshold={0.5} />
           </View>
         </ScrollView>
-        {analysisType && <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type} analysis={analysis} />} style={{ height: Dimensions.get('screen').height - 150 }} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />}
+        {analysisType && <Modal Component={<AnalysisByMember type={activeTab} analysisType={analysisType.type} dataViewType=''/>} style={{ height: Dimensions.get('screen').height - 150 }} modalVisible={modalVisible} modalVisibleHandler={modalVisibleHandler} onDelete={false} />}
       </View>
         : <View style={defaultStyle.activityIndicator}><ActivityIndicator size="large" color={colors.text} /></View>
       }

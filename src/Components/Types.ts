@@ -1,7 +1,8 @@
 import { StyleProp, TextStyle } from "react-native";
+import { Itabs } from "../Screens/Analysis/type";
 
 export interface ICustomerNavigationTabList {
-  tab: string;
+  tab: Itabs['tab'];
   active: boolean;
   details: Details;
 };
@@ -11,7 +12,7 @@ export interface Details {
 };
 export type TCustomNavigationTab = {
   tabs: ICustomerNavigationTabList[];
-  tabHandler: (expendType: string) => void;
+  tabHandler: (expendType: Itabs['tab']) => void;
   activeTab: string;
 };
 export interface ICustomText {
