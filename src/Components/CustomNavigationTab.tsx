@@ -9,14 +9,14 @@ const CustomNavigationTab: React.FC<TCustomNavigationTab> = ({ tabs, tabHandler,
     const { colors } = useTheme() as any;
     const defaultColors = {
         backgroundColor: colors.btnPrimaryBackground,
-        // color: colors.HeaderText,
+        color: colors.HeaderText,
         borderRadius: 10,
     };
     return (
         <View style={[defaultStyle.flexRow, styles.navContainer, { backgroundColor: colors.surfaceVariant }]}>
             {tabs.map((el) => (
                 <Pressable key={el.tab} onPress={() => tabHandler(el.tab)} style={[defaultStyle.flex1,el.tab === activeTab && defaultColors,styles.tab]}>
-                    <CustomText title={stringTransform(el.tab,'C')} color={colors.HeaderText} style={[el.tab === activeTab && defaultColors, styles.tabText]} />
+                    <CustomText title={stringTransform(el.tab,'C')} style={el.tab === activeTab ? defaultColors : styles.tabText } />
                 </Pressable>
             ))}
         </View>

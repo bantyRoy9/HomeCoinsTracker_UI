@@ -1,3 +1,4 @@
+import { StyleProp, TextStyle } from "react-native";
 
 export interface ICustomerNavigationTabList {
   tab: string;
@@ -17,7 +18,7 @@ export interface ICustomText {
   title: string | number;
   fontSize?: number;
   color?: string;
-  style?: any;
+  style?: TextStyle | undefined;
   viewStyle?:any
 };
 export interface IModals {
