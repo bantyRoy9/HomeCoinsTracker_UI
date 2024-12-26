@@ -65,7 +65,25 @@ export interface Expend {
   totalexpend: number
   expendByTypes: IexpendByTypes[]
   expendByMembers: any[]
-  recentexpend: any[]
+  recentexpend: Recentexpend[]
+}
+export interface Recentexpend {
+  _id: string
+  amount: number
+  expendType: ExpendType
+  date: string
+  expendBy: ExpendBy
+}
+
+export interface ExpendType {
+  _id: string
+  expendName: string
+  expendType: string
+}
+
+export interface ExpendBy {
+  _id: string
+  name: string
 }
 export interface IexpendByTypes {
   _id: IexpendByTypesId

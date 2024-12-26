@@ -35,7 +35,7 @@ const Analysis:FC<any> = () => {
 
   useEffect(() => {
     if (dateRange) {
-      dispatch(getAnalysisData(dateRange.dateRange, false, analysisType!?.type||'', analysisType!?.id));
+      dispatch(getAnalysisData(false, analysisType!?.type||'',dateRange.dateRange,analysisType!?.id,'30'));
     }
   }, [dispatch, dateRange, analysisType?.id]);
 
