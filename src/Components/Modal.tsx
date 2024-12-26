@@ -11,8 +11,7 @@ const Modal = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,
       <TouchableWithoutFeedback onPress={modalVisibleHandler}>
         <View style={[styles.overlay,{backgroundColor:colors.modalOverlayColor}]}>
           <TouchableWithoutFeedback>
-            <> 
-            {Component && <View style={[styles.centeredView,bottomView && styles["bottomView"],{backgroundColor:colors[`modal${modalType}Background`],...style},styles[modalType]]}>
+            <View style={[styles.centeredView,bottomView && styles["bottomView"],{backgroundColor:colors[`modal${modalType}Background`],...style},styles[modalType]]}>
               <View style={{justifyContent:'center',display:'flex',alignItems:'center',borderRadius:30}}>
                 {onDelete ? 
                   <Pressable onPress={onDelete} style={{backgroundColor:"red",alignItems:'center',gap:10,flexDirection:'row',paddingHorizontal:25,paddingVertical:15,position:'absolute',top:-60,borderRadius:50}}>
@@ -21,7 +20,7 @@ const Modal = ({Component,modalVisible,type,modalVisibleHandler,bottomView=true,
                   </Pressable> : <Pressable style={{height:40,position:'absolute',top:-33}} onTouchStart={modalVisibleHandler}><View style={{width:120,height:5,backgroundColor:colors.surfaceVariant}}></View></Pressable>}
               </View>
               {Component}
-            </View>}</>
+            </View>
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
