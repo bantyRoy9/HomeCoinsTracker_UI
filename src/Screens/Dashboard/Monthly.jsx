@@ -4,6 +4,7 @@ import { FeatherIcons, FontAwesome, defaultStyle, topHomeNavList } from '../../U
 import { Chart, DataTable } from '../../Components'
 import { useTheme } from 'react-native-paper'
 import { useSelector } from 'react-redux'
+import { formatGraphData } from '../../Utils/HomeCommon'
 const Monthly = ({dateRange,monthlyHandle}) => {
     const { colors } = useTheme();
     const backgroundStyle = {backgroundColor: colors.background,color: colors.text};
@@ -22,6 +23,8 @@ const Monthly = ({dateRange,monthlyHandle}) => {
         });
       }
     },[account])
+    console.log(dateRange);
+    
     return (
     <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
         <View style={defaultStyle.screenContainer}>
@@ -54,10 +57,10 @@ const Monthly = ({dateRange,monthlyHandle}) => {
               </View>
               {!isLoading && account?.graphData && account?.graphData.labels && account?.graphData.labels.length > 0 && <>
                 <View style={defaultStyle.viewSection}>
-                  <Chart graphData={account?.graphData} />
+                  <Chart graphData={dateRange.label === "Yearly" ? formatGraphData(account?.graphData,dateRange.dateRange.split("-")[0]):account?.graphData} />
                 </View>
                 <View>
-                  <DataTable tableData={account.graphData} monthlyHandle={monthlyHandle}/>
+                  <DataTable tableData={dateRange.label === "Yearly" ? formatGraphData(account.graphData,dateRange.dateRange.split("-")[0]) : account.graphData} monthlyHandle={monthlyHandle}/>
                 </View></>}
             </View></>}
         </View>

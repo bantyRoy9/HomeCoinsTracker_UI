@@ -122,8 +122,8 @@ export const handleReducerPayload = (currentState,prevState,methodType,key,value
   }
 }
 
-export const dateFormat = (format,date) =>{
-  return moment(date?date:new Date()).format(format?format:"YYYY-MM-DD");
+export const dateFormat = (format,date,type) =>{
+  return moment(date?date:new Date(),type?type:false).format(format?format:"YYYY-MM-DD");
 }
 export const filterKeyIncludeArr=(arr,key,value)=>{
   return arr.filter(el=>el[key]===value);
