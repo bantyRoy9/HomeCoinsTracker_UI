@@ -32,10 +32,12 @@ export const formatGraphData =(graphData:any,year:any)=>{
     return {
       data: Object.values(monthlyData),
       colorCode: dataset.colorCode,
-      strokeWidth: dataset.strokeWidth
+      strokeWidth: dataset.strokeWidth,
+      color:dataset.color
     };
   });
-  lo
+  console.log(monthlyTotals);
+  
   // Step 3: Extract unique months for new labels
   const uniqueMonths = Array.from(new Set(labels)).map(el=>dateFormat("MMMM",el,"YYYY-MM"));
   
