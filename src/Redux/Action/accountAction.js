@@ -11,11 +11,25 @@ const getAnalyticsDetails = (resData) => {
     analyticsJson.Saving = analyticsJson.Earn - analyticsJson.Expend;
     return analyticsJson;
 };
-  
+let cancelTokenSource = null; // Global variable to track ongoing API requests
+
 export const getEarnExpendData = (dateRange,groupId,isGraph=false)=> async(dispatch)=>{
+      // Cancel the previous request if it exists
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel("Previous request canceled.");
+    }
+
+    // Create a new cancel token
+    cancelTokenSource = axios.CancelToken.source();
+
     try{
         dispatch({type:ACCOUNT_REQUIEST});
-        const { data } = await axios.get(`${accountControllerURL}/getEarnExpend?type=both&dateRange=${dateRange}&groupId=${groupId}&isGraph=${isGraph}`, await getAxiosHeader());
+        // const { data } = await axios.get(`${accountControllerURL}/getEarnExpend?type=both&dateRange=${dateRange}&groupId=${groupId}&isGraph=${isGraph}`, await getAxiosHeader());
+        const { data } = await axios.get(`${accountControllerURL}/getEarnExpend`, {
+            params: { type: "both", dateRange, groupId, isGraph },
+            headers: await getAxiosHeader(),
+            cancelToken: cancelTokenSource.token, // Attach cancel token
+        });
         if (data.status && data.data && data.graphData) {
             if(isGraph){
                 data.analyticsDetail = getAnalyticsDetails(data.graphData)
