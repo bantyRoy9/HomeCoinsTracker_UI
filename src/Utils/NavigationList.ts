@@ -20,7 +20,7 @@ export const AnalysisNavList = [{
     active: true
 }, {
     label: "Yearly",
-    dateRange: `${moment().startOf('year').format('YYYY-MM-DD')}_${moment().endOf('year').format('YYYY-MM-DD')}`,
+    dateRange: `${moment().subtract('year',1).format('YYYY-MM-DD')}_${moment().format('YYYY-MM-DD')}`,
     active: false
 }
 ];
